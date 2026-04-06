@@ -1,0 +1,116 @@
+require('dotenv').config();
+require('reflect-metadata');
+const { DataSource } = require('typeorm');
+const mongoose = require('mongoose');
+const Redis = require('ioredis');
+const AWS = require('aws-sdk');
+const path = require('path');
+
+
+mongoose.connect(process.env.MONGODB_URL)
+  .then(() => console.log('✅ MongoDB connected'))
+  .catch(err => console.error('❌ MongoDB connection error:', err.message));
+
+
+const redis = new Redis({
+  host: process.env.REDIS_HOST,
+  port: process.env.REDIS_PORT,
+  db: process.env.REDIS_DB || 1,
+  password: process.env.REDIS_PASSWORD,
+});
+
+redis.on('connect', () => console.log('✅ Redis connected'));
+redis.on('ready', () => console.log('✅ Redis ready'));
+redis.on('error', err => console.error('❌ Redis error:', err.message));
+
+
+AWS.config.update({
+  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  region: process.env.AWS_REGION || 'ap-southeast-1',
+});
+
+const s3 = new AWS.S3({
+  apiVersion: '2006-03-01',
+  signatureVersion: 'v4',
+});
+
+const S3_BUCKET = process.env.S3_BUCKET_NAME;
+
+
+const s3Helper = {
+  /**
+   * Upload file to S3
+   * @param {Buffer} fileBuffer - File buffer
+   * @param {string} fileName - File name
+   * @param {string} folder - Folder in S3 (e.g., 'users', 'products')
+   * @param {string} contentType - MIME type
+   * @returns {Promise<string>} - S3 URL
+   */
+  async uploadFile(fileBuffer, fileName, folder = 'uploads', contentType = 'application/octet-stream') {
+    const key = `${folder}/${Date.now()}-${fileName}`;
+    const params = {
+      Bucket: S3_BUCKET,
+      Key: key,
+      Body: fileBuffer,
+      ContentType: contentType,
+      ACL: 'public-read',
+    };
+
+    const result = await s3.upload(params).promise();
+    return result.Location;
+  },
+
+  /**
+   * Get signed URL for private files
+   * @param {string} key - S3 object key
+   * @param {number} expires - Expiration time in seconds
+   * @returns {string} - Signed URL
+   */
+  getSignedUrl(key, expires = 3600) {
+    return s3.getSignedUrl('getObject', {
+      Bucket: S3_BUCKET,
+      Key: key,
+      Expires: expires,
+    });
+  },
+
+  /**
+   * Delete file from S3
+   * @param {string} fileUrl - Full S3 URL or key
+   * @returns {Promise<void>}
+   */
+  async deleteFile(fileUrl) {
+    const key = fileUrl.includes('amazonaws.com') 
+      ? fileUrl.split('.com/')[1] 
+      : fileUrl;
+
+    await s3.deleteObject({
+      Bucket: S3_BUCKET,
+      Key: key,
+    }).promise();
+  },
+
+  /**
+   * Check if file exists
+   * @param {string} key - S3 object key
+   * @returns {Promise<boolean>}
+   */
+  async fileExists(key) {
+    try {
+      await s3.headObject({ Bucket: S3_BUCKET, Key: key }).promise();
+      return true;
+    } catch (error) {
+      return false;
+    }
+  },
+};
+
+
+module.exports = {
+  mongoose,
+  redis,
+  s3,
+  s3Helper,
+  S3_BUCKET,
+};
