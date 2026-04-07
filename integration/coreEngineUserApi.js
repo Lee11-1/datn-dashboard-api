@@ -7,7 +7,7 @@ class CoreEngineUserApi {
    * @returns {Promise<Object>} Created user object
    */
   async createUser(userData) {
-    const response = await coreEngineApi.doRequest('/users', {
+    const response = await coreEngineApi.doRequest('/api/users', {
       method: 'post',
       payload: userData,
     });
@@ -25,7 +25,7 @@ class CoreEngineUserApi {
    * @returns {Promise<Object>} { users, pagination }
    */
   async getUsers(query) {
-    const response = await coreEngineApi.doRequest('/users', {
+    const response = await coreEngineApi.doRequest('/api/users', {
       method: 'get',
       payload: query,
     });
@@ -43,7 +43,7 @@ class CoreEngineUserApi {
    * @returns {Promise<Object>} User object
    */
   async getUserById(id) {
-    const response = await coreEngineApi.doRequest(`/users/${id}`, {
+    const response = await coreEngineApi.doRequest(`/api/users/${id}`, {
       method: 'get',
     });
 
@@ -61,7 +61,7 @@ class CoreEngineUserApi {
    * @returns {Promise<Object>} Updated user object
    */
   async updateUser(id, updates) {
-    const response = await coreEngineApi.doRequest(`/users/${id}`, {
+    const response = await coreEngineApi.doRequest(`/api/users/${id}`, {
       method: 'put',
       payload: updates,
     });
@@ -79,7 +79,7 @@ class CoreEngineUserApi {
    * @returns {Promise<Object>} Deleted user object
    */
   async deleteUser(id) {
-    const response = await coreEngineApi.doRequest(`/users/${id}`, {
+    const response = await coreEngineApi.doRequest(`/api/users/${id}`, {
       method: 'delete',
     });
 

@@ -3,18 +3,18 @@ const coreEngineApi = require('../integration/coreEngineApi');
 class AuthController {
   async login(ctx) {
     try {
-      const { email, password } = ctx.request.body;
-      
-      if (!email || !password) {
+      const { username, password } = ctx.request.body;
+
+      if (!username || !password) {
         ctx.status = 400;
         ctx.body = {
           success: false,
-          message: 'Email and password are required',
+          message: 'Username and password are required',
         };
         return;
       }
 
-      const response = await coreEngineApi.authenticate({ email, password });
+      const response = await coreEngineApi.authenticate({ username, password });
 
       if (response.status === 200 || response.status === 201) {
         ctx.status = 200;

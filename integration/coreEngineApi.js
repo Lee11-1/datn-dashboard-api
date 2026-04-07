@@ -89,9 +89,9 @@ class CoreEngineApi {
    * @param {string} password
    * @returns {Promise<Object>} { status, data: { accessToken, refreshToken, user }, error }
    */
-  async authenticate({ email, password }) {
+  async authenticate({ username, password }) {
     const payload = {
-      email,
+      username,
       password,
       scope_type: 'System',
     };

@@ -1,7 +1,7 @@
 const _ = require("lodash");
 const uuid = require("uuid/v4");
 const jwt = require("jsonwebtoken");
-require("dotenv").config({ path: ".localenv" });
+require("dotenv").config();
 
 const loggingMethod = ["GET", "POST", "PUT", "DELETE", "PATCH"];
 const loggingPathIgnore = ["/login", "/api-logs-database", "/api-logs"];
@@ -18,7 +18,6 @@ class Log {
 
 async function authorize(ctx, next) {
   const authHeader = ctx.headers.authorization;
-
   if (!authHeader) {
     ctx.status = 401;
     ctx.body = { code: "NO_TOKEN", message: "No token provided" };
@@ -33,6 +32,7 @@ async function authorize(ctx, next) {
   }
 
   try {
+    console.log("Verifying token:", process.env.JWT_SECRET);
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     ctx.User = decoded;
     await next();

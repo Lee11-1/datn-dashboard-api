@@ -28,7 +28,7 @@ class UserController {
 
       ctx.body = {
         success: true,
-        data: result.users,
+        data: result.data,
         pagination: result.pagination
       };
     } catch (error) {
@@ -42,7 +42,7 @@ class UserController {
 
   async getUserById(ctx) {
     try {
-      const { id } = ctx.params;
+      const { id } = ctx.request.body;
       const user = await userService.getUserById(id);
 
       ctx.body = {
@@ -60,16 +60,11 @@ class UserController {
 
   async updateUser(ctx) {
     try {
-      const { id } = ctx.params;
-      const updates = ctx.request.body;
+      const { id, ...updates } = ctx.request.body;
       const updatedUser = await userService.updateUser(id, updates);
       const { passwordHash: _, ...userResponse } = updatedUser;
 
-      ctx.body = {
-        success: true,
-        message: 'User updated successfully',
-        data: userResponse,
-      };
+      ctx.body = userResponse ;
     } catch (error) {
       ctx.status = 404;
       ctx.body = {
@@ -81,7 +76,7 @@ class UserController {
 
   async deleteUser(ctx) {
     try {
-      const { id } = ctx.params;
+      const { id } = ctx.request.query;
       await userService.deleteUser(id);
 
       ctx.body = {
