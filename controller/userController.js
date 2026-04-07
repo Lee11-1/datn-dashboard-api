@@ -8,11 +8,7 @@ class UserController {
       const { passwordHash: _, ...userResponse } = savedUser;
 
       ctx.status = 201;
-      ctx.body = {
-        success: true,
-        message: 'User created successfully',
-        data: userResponse,
-      };
+      ctx.body = userResponse.data;
     } catch (error) {
       ctx.status = 400;
       ctx.body = {

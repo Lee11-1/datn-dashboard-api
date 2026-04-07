@@ -1,4 +1,4 @@
-require("dotenv").config({ path: ".localenv" });
+require("dotenv").config();
 require("reflect-metadata");
 const glob = require("glob");
 const Koa = require("koa");
