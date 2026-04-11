@@ -19,7 +19,7 @@ class CategoryController {
 
   async getCategories(ctx) {
     try {
-      const result = await coreEngineCategoryApi.getCategories(ctx.query);
+      const result = await coreEngineCategoryApi.getCategories(ctx.request.query);
 
       ctx.body = result.data;
     } catch (error) {
@@ -47,7 +47,7 @@ class CategoryController {
 
   async getRootCategories(ctx) {
     try {
-      const result = await coreEngineCategoryApi.getRootCategories(ctx.query);
+      const result = await coreEngineCategoryApi.getRootCategories(ctx.request.query);
 
       ctx.body = result.data;
     } catch (error) {
@@ -61,7 +61,7 @@ class CategoryController {
 
   async getCategoryById(ctx) {
     try {
-      const { id } = ctx.request.body || ctx.query;
+      const id = ctx.request.body?.id ?? ctx.request.query?.id;
 
       if (!id) {
         ctx.status = 400;
@@ -86,7 +86,7 @@ class CategoryController {
 
   async getChildCategories(ctx) {
     try {
-      const { parentId } = ctx.request.body || ctx.query;
+      const parentId = ctx.request.body?.parentId ?? ctx.request.query?.parentId;
 
       if (!parentId) {
         ctx.status = 400;
@@ -97,7 +97,7 @@ class CategoryController {
         return;
       }
 
-      const result = await coreEngineCategoryApi.getChildCategories(parentId, ctx.query);
+      const result = await coreEngineCategoryApi.getChildCategories(parentId, ctx.request.query);
 
       ctx.body = result.data;
     } catch (error) {
@@ -136,9 +136,8 @@ class CategoryController {
 
   async deleteCategory(ctx) {
     try {
-      const { id } = ctx.request.body || ctx.query;
-
-      if (!id) {
+      const category_id = ctx.request.body?.category_id ?? ctx.request.query?.category_id;
+      if (!category_id) {
         ctx.status = 400;
         ctx.body = {
           success: false,
@@ -147,9 +146,9 @@ class CategoryController {
         return;
       }
 
-      const result = await coreEngineCategoryApi.deleteCategory(id);
+      const result = await coreEngineCategoryApi.deleteCategory(category_id);
 
-      ctx.body = result.data;
+      ctx.body = result;
     } catch (error) {
       ctx.status = 404;
       ctx.body = {
@@ -161,7 +160,7 @@ class CategoryController {
 
   async activateCategory(ctx) {
     try {
-      const { id } = ctx.request.body || ctx.query;
+      const id = ctx.request.body?.id ?? ctx.request.query?.id;
 
       if (!id) {
         ctx.status = 400;
@@ -186,7 +185,7 @@ class CategoryController {
 
   async deactivateCategory(ctx) {
     try {
-      const { id } = ctx.request.body || ctx.query;
+      const id = ctx.request.body?.id ?? ctx.request.query?.id;
 
       if (!id) {
         ctx.status = 400;

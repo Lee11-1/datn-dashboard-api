@@ -83,8 +83,8 @@ class ProductController {
 
   async deleteProduct(ctx) {
     try {
-      const { id } = ctx.request.body || ctx.query;
-
+      const id  = ctx.request.body?.product_id || ctx.request.query.product_id;
+      
       if (!id) {
         ctx.status = 400;
         ctx.body = {
