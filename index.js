@@ -9,14 +9,14 @@ const zlib = require("zlib");
 const config = require("./config/index.js");
 const { log } = require("./middleware/index");
 const { createServer } = require("http");
-const { initSocket } = require("./socket/socketHandler.js"); 
+const { initSocket } = require("./socket/socketHandler.js");
+const geoDataSyncCronJob = require("./service/geoDataSyncCronJob"); 
 
 const app = new Koa();
 
 app.use(bodyParser());
 app.use(cors({
   origin: (ctx) => {
-    // Allow all origins for now, can be restricted to specific domains
     return '*';
   },
   credentials: true,
@@ -51,12 +51,12 @@ async function startServer() {
       initSocket(httpServer);
       
       httpServer.listen(config.port, () => {
-        console.log(`✅ Server is running on port ${config.port}`);
-        console.log(`✅ Koa (HTTP) and Socket.IO (WebSocket) are sharing the same port.`);
+        console.log(` Server is running on port ${config.port}`);
+        geoDataSyncCronJob.start();
       });
     });
   } catch (err) {
-    console.error('❌ Server startup failed:', err.message);
+    console.error(' Server startup failed:', err.message);
     process.exit(1);
   }
 }

@@ -32,7 +32,6 @@ async function authorize(ctx, next) {
   }
 
   try {
-    console.log("Verifying token:", process.env.JWT_SECRET);
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     ctx.User = decoded;
     await next();
