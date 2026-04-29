@@ -13,7 +13,7 @@ router.get('/zone/:zoneId', customerController.getCustomersByZone.bind(customerC
 
 router.get('/:id', customerController.getCustomerById.bind(customerController));
 
-router.put('/:id', customerController.updateCustomer.bind(customerController));
+router.put('/', customerController.updateCustomer.bind(customerController));
 
 router.delete('/', customerController.deleteCustomer.bind(customerController));
 

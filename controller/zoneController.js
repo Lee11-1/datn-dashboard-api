@@ -48,7 +48,8 @@ class ZoneController {
 
       ctx.body = {
         success: true,
-        data: result.data || result
+        data: result.data || result,
+        pagination: result.pagination || null
       };
     } catch (error) {
       ctx.status = 500;

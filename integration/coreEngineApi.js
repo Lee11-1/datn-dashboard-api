@@ -34,6 +34,7 @@ class RequestHandler {
   }
 
   async doRequest({ url, method, payload, headers }) {
+    payload = Object.assign({}, payload);
     if (!payload || !(payload instanceof Object)) payload = {};
 
     const requestData = this.makeRequestData({
@@ -71,14 +72,13 @@ class CoreEngineApi {
 
   async doRequest(endpoint, { method = 'post', payload, headers }) {
     let finalHeaders = { ...headers };
-
     const requestParams = {
       url: endpoint,
       headers: finalHeaders,
       method,
       payload,
     };
-
+    console.log('📍 Making request to Core Engine:', requestParams);
     const response = await this.requestHandler.doRequest(requestParams);
     return response;
   }

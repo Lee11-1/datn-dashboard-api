@@ -77,9 +77,9 @@ class CustomerController {
    */
   async updateCustomer(ctx) {
     try {
-      const { id } = ctx.params;
       const updates = ctx.request.body;
-
+      const id = updates.id || ctx.request.body?.id || ctx.request.query?.id;
+      
       if (!id) {
         ctx.status = 400;
         ctx.body = {
