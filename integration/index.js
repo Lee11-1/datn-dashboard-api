@@ -7,6 +7,7 @@ const coreEngineCustomerApi = require('./coreEngineCustomerApi');
 const coreEngineZoneApi = require('./coreEngineZoneApi');
 const coreEngineScheduleApi = require('./coreEngineScheduleApi');
 const coreEngineWarehouseApi = require('./coreEngineWarehouseApi');
+const coreEngineInventoryApi = require('./coreEngineInventoryApi');
 
 module.exports = {
   coreEngineApi,
@@ -17,4 +18,5 @@ module.exports = {
   coreEngineZoneApi,
   coreEngineScheduleApi,
   coreEngineWarehouseApi,
+  coreEngineInventoryApi,
 };
