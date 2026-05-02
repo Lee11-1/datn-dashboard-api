@@ -179,7 +179,7 @@ class ScheduleController {
    */
   async updateSchedule(ctx) {
     try {
-      const { id } = ctx.params;
+      const { id } = ctx.request.body || ctx.query;
       const updateData = ctx.request.body;
 
       const result = await coreEngineScheduleApi.updateSchedule(id, updateData);
