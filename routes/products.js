@@ -10,7 +10,7 @@ router.post('/', authorize, productController.createProduct.bind(productControll
 
 router.get('/', authorize, productController.getProducts.bind(productController));
 
-router.post('/get-by-id', authorize, productController.getProductById.bind(productController));
+router.get('/get-by-id', authorize, productController.getProductById.bind(productController));
 
 router.post('/search/by-sku', authorize, productController.getProductsBySKU.bind(productController));
 
@@ -25,5 +25,10 @@ router.delete('/', authorize, productController.deleteProduct.bind(productContro
 router.patch('/activate', authorize, productController.activateProduct.bind(productController));
 
 router.patch('/deactivate', authorize, productController.deactivateProduct.bind(productController));
+
+router.get('/detail', authorize, productController.getProductDetails.bind(productController));
+
+router.put('/detail', authorize, productController.updateProductDetails.bind(productController));
+
 
 module.exports = router;

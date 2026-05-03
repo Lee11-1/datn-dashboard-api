@@ -6,11 +6,12 @@ const cors = require("@koa/cors");
 const bodyParser = require("koa-bodyparser");
 const compress = require("koa-compress");
 const zlib = require("zlib");
-const config = require("./config/index.js");
+const config = require("./config");
 const { log } = require("./middleware/index");
 const { createServer } = require("http");
 const { initSocket } = require("./socket/socketHandler.js");
-const geoDataSyncCronJob = require("./service/geoDataSyncCronJob"); 
+const geoDataSyncCronJob = require("./service/geoDataSyncCronJob");
+require("./config/database"); 
 
 const app = new Koa();
 

@@ -28,4 +28,5 @@ router.get('/low-stock', authorize, inventoryController.getLowStockProducts.bind
 
 router.get('/warehouse/:warehouseId/summary', authorize, inventoryController.getWarehouseSummary.bind(inventoryController));
 
+router.delete('/', authorize, inventoryController.deleteInventory.bind(inventoryController));
 module.exports = router;

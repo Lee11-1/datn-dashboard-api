@@ -78,7 +78,6 @@ class CoreEngineApi {
       method,
       payload,
     };
-    console.log('📍 Making request to Core Engine:', requestParams);
     const response = await this.requestHandler.doRequest(requestParams);
     return response;
   }

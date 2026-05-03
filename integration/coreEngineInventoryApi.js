@@ -112,6 +112,20 @@ class CoreEngineInventoryApi {
     return response.data;
   }
 
+  async deleteInventory(payload) {
+
+    const response = await coreEngineApi.doRequest(`/inventory`, {
+      method: 'delete',
+      payload: payload
+    });
+
+    if (response.status !== 200) {
+      throw new Error(response.data?.message || 'Failed to delete inventory');
+    }
+
+    return response.data;
+  }
+
   /**
    * Release reserved quantity
    * @param {Object} data - { productId, warehouseId, quantity, reservationId }

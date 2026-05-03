@@ -185,6 +185,32 @@ class InventoryController {
     }
   }
 
+  async deleteInventory(ctx){
+    const { id, userId } = ctx.request.query;
+    if (!id) {  
+        ctx.status = 400;
+        ctx.body = {
+          success: false,
+          message: 'Missing required field: id'
+        };
+        return;
+    }
+    try {      
+        const payload = { id, userId };
+        const result = await coreEngineInventoryApi.deleteInventory(payload);
+        ctx.body = {
+            success: true,
+            data: result.data || result
+        };
+    } catch (error) {       
+        ctx.status = 400;
+        ctx.body = {
+            success: false,
+            message: error.message
+        };
+    }
+  }
+
   /**
    * Release reserved quantity
    * POST /inventory/release
