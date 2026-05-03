@@ -3,7 +3,7 @@ const _ = require('lodash')
 const defaults = {
     production: false,
     env: 'dev',
-    port: 5009,
+    port: 5005,
     secret: 'secret-boilerplate-token',
     redisHost: 'localhost',
     redisPort: '6379',

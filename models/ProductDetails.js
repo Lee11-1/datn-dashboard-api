@@ -12,6 +12,11 @@ const productDetailsSchema = new mongoose.Schema(
       type: String,
       description: 'Thành phần cấu tạo sản phẩm'
     },
+    uses: {
+      type: String,
+      description: 'Công dụng của sản phẩm'
+      
+    },
     usageInstructions: {
       type: String,
       description: 'Hướng dẫn sử dụng'
