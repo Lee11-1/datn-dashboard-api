@@ -21,7 +21,7 @@ class OrdersController {
 
   async getOrderDetail(ctx) {
     try {
-      const { orderId } = ctx.params;
+      const { orderId } = ctx.request.query;
 
       const result = await coreEngineOrdersApi.getOrderDetail(orderId);
 
@@ -100,8 +100,7 @@ class OrdersController {
 
   async approveOrder(ctx) {
     try {
-      const { orderId } = ctx.params;
-      const { approvedBy, note = '' } = ctx.request.body;
+      const { approvedBy, note = '', orderId } = ctx.request.body;
 
       if (!approvedBy) {
         ctx.status = 400;
@@ -130,8 +129,7 @@ class OrdersController {
 
   async rejectOrder(ctx) {
     try {
-      const { orderId } = ctx.params;
-      const { rejectReason, rejectNote = '' } = ctx.request.body;
+      const { rejectReason, rejectNote = '', orderId } = ctx.request.body;
 
       if (!rejectReason) {
         ctx.status = 400;

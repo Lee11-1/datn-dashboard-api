@@ -10,15 +10,13 @@ const router = new Router({
 router.get('/', authorize, ordersController.getOrders.bind(ordersController));
 
 // Get order detail
-router.get('/:orderId', authorize, ordersController.getOrderDetail.bind(ordersController));
+router.get('/detail', authorize, ordersController.getOrderDetail.bind(ordersController));
 
 // Update order status (approve, reject, etc.)
 router.patch('/:orderId/status', authorize, ordersController.updateOrderStatus.bind(ordersController));
 
-// Approve order (shortcut endpoint)
-router.patch('/:orderId/approve', authorize, ordersController.approveOrder.bind(ordersController));
+router.patch('/approve', authorize, ordersController.approveOrder.bind(ordersController));
 
-// Reject order (shortcut endpoint)
-router.patch('/:orderId/reject', authorize, ordersController.rejectOrder.bind(ordersController));
+router.patch('/reject', authorize, ordersController.rejectOrder.bind(ordersController));
 
 module.exports = router;
