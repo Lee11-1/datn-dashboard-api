@@ -248,6 +248,18 @@ class CoreEngineInventoryApi {
 
     return response.data;
   }
+
+  async updateInventories(updateData) {
+    const response = await coreEngineApi.doRequest(`/inventory/batch-update`, {
+      method: 'post',
+      payload: updateData
+    });
+     if (response.status !== 200 && response.status !== 201) {
+      throw new Error(response.data?.message || 'Failed to update inventory');
+    }
+
+    return response.data;
+  }
 }
 
 module.exports = new CoreEngineInventoryApi();
