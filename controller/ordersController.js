@@ -1,5 +1,5 @@
 const coreEngineOrdersApi = require('../integration/ordersIntegration');
-
+const orderService = require('../service/orderService');
 class OrdersController {
   async getOrders(ctx) {
     try {
@@ -43,7 +43,6 @@ class OrdersController {
       const { orderId } = ctx.params;
       const { status, rejectReason, rejectNote, approvedBy, note } = ctx.request.body;
 
-      // Validate required fields
       if (!status) {
         ctx.status = 400;
         ctx.body = {
@@ -53,7 +52,6 @@ class OrdersController {
         return;
       }
 
-      // Validate reject reason if status is rejected
       if (status === 'rejected' && !rejectReason) {
         ctx.status = 400;
         ctx.body = {
@@ -63,7 +61,6 @@ class OrdersController {
         return;
       }
 
-      // Validate approvedBy if status is approved
       if (status === 'approved' && !approvedBy) {
         ctx.status = 400;
         ctx.body = {
@@ -73,16 +70,7 @@ class OrdersController {
         return;
       }
 
-      const data = {
-        status,
-      };
-
-      if (rejectReason) data.rejectReason = rejectReason;
-      if (rejectNote) data.rejectNote = rejectNote;
-      if (approvedBy) data.approvedBy = approvedBy;
-      if (note) data.note = note;
-
-      const result = await coreEngineOrdersApi.updateOrderStatus(orderId, data);
+      const result = await coreEngineOrdersApi.updateOrderStatus(orderId, ctx.request.body);
 
       ctx.body = {
         success: true,
@@ -111,7 +99,7 @@ class OrdersController {
         return;
       }
 
-      const result = await coreEngineOrdersApi.approveOrder(orderId, approvedBy, note);
+      const result = await orderService.approve(orderId, approvedBy, note);
 
       ctx.body = {
         success: true,

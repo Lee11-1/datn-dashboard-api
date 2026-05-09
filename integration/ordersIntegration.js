@@ -22,6 +22,17 @@ class CoreEngineOrdersApi {
 
     return response.data;
   }
+async getOrderItems(orderId) {
+    const response = await coreEngineApi.doRequest(`/api/orders/${orderId}/items`, {
+      method: 'get'
+    });
+
+    if (response.status !== 200) {
+      throw new Error(response.data?.message || 'Failed to fetch order items');
+    }
+
+    return response.data;
+  }
 
   /**
    * Get orders filtered by status
