@@ -11,8 +11,6 @@ router.get('/search/:term', customerController.searchCustomers.bind(customerCont
 
 router.get('/zone/:zoneId', customerController.getCustomersByZone.bind(customerController));
 
-router.get('/:id', customerController.getCustomerById.bind(customerController));
-
 router.put('/', customerController.updateCustomer.bind(customerController));
 
 router.delete('/', customerController.deleteCustomer.bind(customerController));
