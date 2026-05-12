@@ -86,6 +86,33 @@ class OrdersController {
     }
   }
 
+  
+  async getOrdersByUser(ctx) {
+    try {
+      const { userId, page = 1, limit = 10 } = ctx.request.query;
+      if (!userId) {
+        ctx.status = 400;
+        ctx.body = {
+          success: false,
+          message: 'Missing userId'
+        };
+        return;
+      }
+      const result = await coreEngineOrdersApi.getOrdersByUser(userId, { page, limit });
+      ctx.body = {
+        success: true,
+        data: result.data.orders,
+        pagination: result.data.pagination
+      };
+    } catch (error) {
+      ctx.status = 500;
+      ctx.body = {
+        success: false,
+        message: error.message
+      };
+    }
+  }
+
   async approveOrder(ctx) {
     try {
       const { approvedBy, note = '', orderId } = ctx.request.body;

@@ -16,4 +16,6 @@ router.patch('/approve', authorize, ordersController.approveOrder.bind(ordersCon
 
 router.patch('/reject', authorize, ordersController.rejectOrder.bind(ordersController));
 
+router.get('/user', authorize, ordersController.getOrdersByUser);
+
 module.exports = router;

@@ -136,6 +136,25 @@ async getOrderItems(orderId) {
 
     return response.data;
   }
+
+  
+  async getOrdersByUser(userId, params) {
+    try {
+      const response = await coreEngineApi.doRequest(`/api/orders/user/${userId}`, {
+        method: 'get',
+        payload: params
+      });
+      
+      if (response.status !== 200) {
+        throw new Error(response.data?.message || 'Failed to fetch orders by user');
+      }
+    
+      return response.data;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+
 }
 
 module.exports = new CoreEngineOrdersApi();

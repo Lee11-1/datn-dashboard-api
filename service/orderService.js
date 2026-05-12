@@ -29,7 +29,6 @@ class OrderService {
       const result = await coreEngineOrdersApi.approveOrder(orderId, approvedBy, note);
       return result;
     }
-
   }
 
 

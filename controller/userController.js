@@ -38,13 +38,10 @@ class UserController {
 
   async getUserById(ctx) {
     try {
-      const { id } = ctx.request.body;
-      const user = await userService.getUserById(id);
+      const { id } = ctx.request.query;
+      const result = await userService.getUserById(id);
 
-      ctx.body = {
-        success: true,
-        data: user,
-      };
+      ctx.body = result;
     } catch (error) {
       ctx.status = 404;
       ctx.body = {

@@ -10,7 +10,7 @@ router.post('/', authorize, userController.createUser.bind(userController));
 
 router.get('/', authorize, authorizeRole(['admin']), userController.getUsers.bind(userController));
 
-router.post('/get-by-id', authorize, userController.getUserById.bind(userController));
+router.get('/get-by-id', authorize, userController.getUserById.bind(userController));
 
 router.put('/', authorize, userController.updateUser.bind(userController));
 
