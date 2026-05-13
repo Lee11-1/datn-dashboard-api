@@ -30,10 +30,6 @@ class WarehouseController {
     }
   }
 
-  /**
-   * Get all warehouses with pagination and filters
-   * GET /api/warehouses
-   */
   async getWarehouses(ctx) {
     try {
       const result = await coreEngineApi.getWarehouses(ctx.request.query);
@@ -52,38 +48,11 @@ class WarehouseController {
     }
   }
 
-  /**
-   * Get warehouse by ID
-   * GET /api/warehouses/:id
-   */
-  async getWarehouseById(ctx) {
-    try {
-      const { id } = ctx.params;
-      const result = await coreEngineApi.getWarehouseById(id);
-
-      ctx.body = {
-        success: true,
-        data: result.data || result
-      };
-    } catch (error) {
-      ctx.status = 404;
-      ctx.body = {
-        success: false,
-        message: error.message
-      };
-    }
-  }
-
-  /**
-   * Update warehouse
-   * PUT /api/warehouses/:id
-   */
   async updateWarehouse(ctx) {
     try {
-      const { id } = ctx.params;
       const updateData = ctx.request.body;
 
-      const result = await coreEngineApi.updateWarehouse(id, updateData);
+      const result = await coreEngineApi.updateWarehouse(updateData.id, updateData);
 
       ctx.body = {
         success: true,
@@ -98,10 +67,6 @@ class WarehouseController {
     }
   }
 
-  /**
-   * Delete warehouse
-   * DELETE /api/warehouses/:id
-   */
   async deleteWarehouse(ctx) {
     try {
       const { id } = ctx.params;
@@ -119,99 +84,6 @@ class WarehouseController {
         message: error.message
       };
     }
-  }
-
-  /**
-   * Placeholder methods for other endpoints
-   * These would call additional integration methods if needed
-   */
-
-  async bulkCreateWarehouses(ctx) {
-    ctx.status = 501;
-    ctx.body = {
-      success: false,
-      message: 'Not implemented yet'
-    };
-  }
-
-  async searchWarehouses(ctx) {
-    ctx.status = 501;
-    ctx.body = {
-      success: false,
-      message: 'Not implemented yet'
-    };
-  }
-
-  async getWarehouseStatistics(ctx) {
-    ctx.status = 501;
-    ctx.body = {
-      success: false,
-      message: 'Not implemented yet'
-    };
-  }
-
-  async getWarehouseByCode(ctx) {
-    ctx.status = 501;
-    ctx.body = {
-      success: false,
-      message: 'Not implemented yet'
-    };
-  }
-
-  async getWarehousesByZone(ctx) {
-    ctx.status = 501;
-    ctx.body = {
-      success: false,
-      message: 'Not implemented yet'
-    };
-  }
-
-  async getWarehousesByManager(ctx) {
-    ctx.status = 501;
-    ctx.body = {
-      success: false,
-      message: 'Not implemented yet'
-    };
-  }
-
-  async toggleWarehouseStatus(ctx) {
-    ctx.status = 501;
-    ctx.body = {
-      success: false,
-      message: 'Not implemented yet'
-    };
-  }
-
-  async assignManager(ctx) {
-    ctx.status = 501;
-    ctx.body = {
-      success: false,
-      message: 'Not implemented yet'
-    };
-  }
-
-  async removeManager(ctx) {
-    ctx.status = 501;
-    ctx.body = {
-      success: false,
-      message: 'Not implemented yet'
-    };
-  }
-
-  async assignZone(ctx) {
-    ctx.status = 501;
-    ctx.body = {
-      success: false,
-      message: 'Not implemented yet'
-    };
-  }
-
-  async removeZone(ctx) {
-    ctx.status = 501;
-    ctx.body = {
-      success: false,
-      message: 'Not implemented yet'
-    };
   }
 }
 
