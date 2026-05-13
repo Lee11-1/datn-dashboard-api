@@ -6,14 +6,14 @@ const router = new Router({
   prefix: '/api/users'
 });
 
-router.post('/', authorize, userController.createUser.bind(userController));
+router.post('/', authorize, authorizeRole(['admin']), userController.createUser.bind(userController));
 
-router.get('/', authorize, authorizeRole(['admin']), userController.getUsers.bind(userController));
+router.get('/', authorize, authorizeRole(['admin', 'manager']), userController.getUsers.bind(userController));
 
-router.get('/get-by-id', authorize, userController.getUserById.bind(userController));
+router.get('/get-by-id', authorize, authorizeRole(['admin', 'sale', 'manager']), userController.getUserById.bind(userController));
 
-router.put('/', authorize, userController.updateUser.bind(userController));
+router.put('/', authorize, authorizeRole(['admin']), userController.updateUser.bind(userController));
 
-router.delete('/', authorize, userController.deleteUser.bind(userController));
+router.delete('/', authorize, authorizeRole(['admin']), userController.deleteUser.bind(userController));
 
 module.exports = router;

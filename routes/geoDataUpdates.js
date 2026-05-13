@@ -6,10 +6,10 @@ const router = new Router({
   prefix: '/api/geo-data-updates'
 });
 
-router.get('/', zoneController.getGeoDataUpdates.bind(zoneController));
+router.get('/', authorize, authorizeRole(['admin']), zoneController.getGeoDataUpdates.bind(zoneController));
 
-router.post('/sync',authorize, zoneController.triggerGeoDataSync.bind(zoneController));
+router.post('/sync', authorize, authorizeRole(['admin']), zoneController.triggerGeoDataSync.bind(zoneController));
 
-router.get('/status', zoneController.getSyncStatus.bind(zoneController));
+router.get('/status', authorize, authorizeRole(['admin']), zoneController.getSyncStatus.bind(zoneController));
 
 module.exports = router;
