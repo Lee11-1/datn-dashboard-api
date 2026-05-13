@@ -1,12 +1,11 @@
-const coreEngineProductApi = require('../integration/coreEngineProductApi');
+const coreEngineApi = require('../integration/coreEngineApi');
 const productServices = require('../service/productServices');
 
 class ProductController {
   async createProduct(ctx) {
     try {
       const productData = ctx.request.body;
-      const result = await coreEngineProductApi.createProduct(productData);
-      console.log('Product created successfully:', result);
+      const result = await coreEngineApi.createProduct(productData);
       if (result.success){
         const productId = result.data.id;
         
@@ -45,7 +44,7 @@ class ProductController {
 
   async getProducts(ctx) {
     try {
-      const result = await coreEngineProductApi.getProducts(ctx.query);
+      const result = await coreEngineApi.getProducts(ctx.query);
 
       ctx.body = result;
     } catch (error) {
@@ -70,7 +69,7 @@ class ProductController {
         return;
       }
 
-      const product = await coreEngineProductApi.getProductById(id);
+      const product = await coreEngineApi.getProductById(id);
 
       ctx.body = product;
     } catch (error) {
@@ -95,7 +94,7 @@ class ProductController {
         return;
       }
 
-      const updatedProduct = await coreEngineProductApi.updateProduct(id, updates);
+      const updatedProduct = await coreEngineApi.updateProduct(id, updates);
 
       ctx.body = updatedProduct;
     } catch (error) {
@@ -120,125 +119,11 @@ class ProductController {
         return;
       }
 
-      const result = await coreEngineProductApi.deleteProduct(id);
+      const result = await coreEngineApi.deleteProduct(id);
 
       ctx.body = result;
     } catch (error) {
       ctx.status = 404;
-      ctx.body = {
-        success: false,
-        message: error.message,
-      };
-    }
-  }
-
-  async getProductsBySKU(ctx) {
-    try {
-      const { skus } = ctx.request.body;
-
-      if (!skus || !Array.isArray(skus)) {
-        ctx.status = 400;
-        ctx.body = {
-          success: false,
-          message: 'skus array is required in request body',
-        };
-        return;
-      }
-
-      const result = await coreEngineProductApi.getProductsBySKU(skus);
-
-      ctx.body = result;
-    } catch (error) {
-      ctx.status = 500;
-      ctx.body = {
-        success: false,
-        message: error.message,
-      };
-    }
-  }
-
-  async getProductsByCategory(ctx) {
-    try {
-      const { categoryId } = ctx.request.body || ctx.query;
-
-      if (!categoryId) {
-        ctx.status = 400;
-        ctx.body = {
-          success: false,
-          message: 'Category ID is required',
-        };
-        return;
-      }
-
-      const result = await coreEngineProductApi.getProductsByCategory(categoryId, ctx.query);
-
-      ctx.body = result;
-    } catch (error) {
-      ctx.status = 500;
-      ctx.body = {
-        success: false,
-        message: error.message,
-      };
-    }
-  }
-
-  async searchProducts(ctx) {
-    try {
-      const result = await coreEngineProductApi.searchProducts(ctx.query);
-
-      ctx.body = result;
-    } catch (error) {
-      ctx.status = 500;
-      ctx.body = {
-        success: false,
-        message: error.message,
-      };
-    }
-  }
-
-  async activateProduct(ctx) {
-    try {
-      const { id } = ctx.request.body || ctx.query;
-
-      if (!id) {
-        ctx.status = 400;
-        ctx.body = {
-          success: false,
-          message: 'Product ID is required',
-        };
-        return;
-      }
-
-      const product = await coreEngineProductApi.activateProduct(id);
-
-      ctx.body = product;
-    } catch (error) {
-      ctx.status = 400;
-      ctx.body = {
-        success: false,
-        message: error.message,
-      };
-    }
-  }
-
-  async deactivateProduct(ctx) {
-    try {
-      const { id } = ctx.request.body || ctx.query;
-
-      if (!id) {
-        ctx.status = 400;
-        ctx.body = {
-          success: false,
-          message: 'Product ID is required',
-        };
-        return;
-      }
-
-      const product = await coreEngineProductApi.deactivateProduct(id);
-
-      ctx.body = product;
-    } catch (error) {
-      ctx.status = 400;
       ctx.body = {
         success: false,
         message: error.message,

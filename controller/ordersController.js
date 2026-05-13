@@ -1,9 +1,9 @@
-const coreEngineOrdersApi = require('../integration/ordersIntegration');
+const coreEngineApi = require('../integration/coreEngineApi');
 const orderService = require('../service/orderService');
 class OrdersController {
   async getOrders(ctx) {
     try {
-      const result = await coreEngineOrdersApi.getOrders(ctx.request.query);
+      const result = await coreEngineApi.getOrders(ctx.request.query);
 
       ctx.body = {
         success: true,
@@ -23,7 +23,7 @@ class OrdersController {
     try {
       const { orderId } = ctx.request.query;
 
-      const result = await coreEngineOrdersApi.getOrderDetail(orderId);
+      const result = await coreEngineApi.getOrderDetail(orderId);
 
       ctx.body = {
         success: true,
@@ -70,7 +70,7 @@ class OrdersController {
         return;
       }
 
-      const result = await coreEngineOrdersApi.updateOrderStatus(orderId, ctx.request.body);
+      const result = await coreEngineApi.updateOrderStatus(orderId, ctx.request.body);
 
       ctx.body = {
         success: true,
@@ -98,7 +98,7 @@ class OrdersController {
         };
         return;
       }
-      const result = await coreEngineOrdersApi.getOrdersByUser(userId, { page, limit });
+      const result = await coreEngineApi.getOrdersByUser(userId, { page, limit });
       ctx.body = {
         success: true,
         data: result.data.orders,
@@ -155,7 +155,7 @@ class OrdersController {
         return;
       }
 
-      const result = await coreEngineOrdersApi.rejectOrder(orderId, rejectReason, rejectNote);
+      const result = await coreEngineApi.rejectOrder(orderId, rejectReason, rejectNote);
 
       ctx.body = {
         success: true,

@@ -15,19 +15,18 @@ class AuthController {
       }
 
       const response = await coreEngineApi.authenticate({ username, password });
-
-      if (response.status === 200 || response.status === 201) {
+      if (response.data) {
         ctx.status = 200;
         ctx.body = {
           success: true,
           message: 'Login successful',
-          data: response.data.data,
+          data: response.data,
         };
       } else {
-        ctx.status = response.status || 401;
+        ctx.status = 401;
         ctx.body = {
           success: false,
-          message: response.data?.message || 'Authentication failed',
+          message: 'Authentication failed',
           error: response.error,
         };
       }

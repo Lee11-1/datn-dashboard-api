@@ -1,16 +1,15 @@
 const cron = require('node-cron');
 const gadmService = require('./gadmService');
-const coreEngineZoneApi = require('../integration/coreEngineZoneApi');
 const { spawn } = require('child_process');
 const path = require('path');
 
-
 class GeoDataSyncCronJob {
-  constructor() {
+  constructor(coreEngineZoneApi) {
     this.cronJob = null;
     this.isRunning = false;
     this.lastSyncTime = null;
-  }
+    this.coreEngineZoneApi = coreEngineZoneApi;
+    }
 
   spawnWorker(userId = '0fa65e3a-05f3-489e-9f11-f9c41ec949ca') {
     try {
@@ -35,12 +34,9 @@ class GeoDataSyncCronJob {
       console.log('\n Starting scheduled geo data sync from GADM... (spawning worker)');
       this.spawnWorker();
     });
-
-    console.log(' Geo data sync cron job initialized');
   }
 
   async triggerManualSync(userId = '0fa65e3a-05f3-489e-9f11-f9c41ec949ca') {
-    console.log(`\n Manual geo data sync requested by ${userId} (spawning worker)...`);
     const pid = this.spawnWorker(userId);
     return { spawned: !!pid, pid };
   }
@@ -65,9 +61,8 @@ class GeoDataSyncCronJob {
     };
 
     try {
-      console.log(' Creating geo data update record...');
       const version = new Date().toISOString().split('T')[0]; 
-      const updateRecord = await coreEngineZoneApi.createGeoDataUpdate({
+      const updateRecord = await this.coreEngineZoneApi.createGeoDataUpdate({
         source: 'gadm',
         version,
         zonesAdded: 0,
@@ -77,8 +72,6 @@ class GeoDataSyncCronJob {
         errorDetail: [],
         triggeredBy: userId
       });
-      console.log(` Geo data update record created:`, updateRecord);
-
       updateRecordId = updateRecord.data?.id || updateRecord.id;
       
       const rawWards = await gadmService.fetchWards();
@@ -92,8 +85,7 @@ class GeoDataSyncCronJob {
         userId
       };
 
-      console.log(' Syncing zones with core engine');
-      const syncResult = await coreEngineZoneApi.syncZones(syncPayload);
+      const syncResult = await this.coreEngineZoneApi.syncZones(syncPayload);
       syncStats = {
         ...syncStats,
         ...syncResult.statistics,
@@ -108,7 +100,7 @@ class GeoDataSyncCronJob {
       const endTime = new Date();
       const duration = endTime - startTime;
       
-      await coreEngineZoneApi.updateGeoDataUpdate(updateRecordId, {
+      await this.coreEngineZoneApi.updateGeoDataUpdate(updateRecordId, {
         status: syncStats.errorRecords > 0 ? 'COMPLETED_WITH_ERRORS' : 'COMPLETED',
         zonesAdded: syncStats.insertedRecords,
         zonesUpdated: syncStats.updatedRecords,
@@ -132,7 +124,7 @@ class GeoDataSyncCronJob {
       
       if (updateRecordId) {
         try {
-          await coreEngineZoneApi.updateGeoDataUpdate(updateRecordId, {
+          await this.coreEngineZoneApi.updateGeoDataUpdate(updateRecordId, {
             status: 'FAILED',
             errorDetail: [{
               code: 'SYNC_FAILED',
@@ -210,5 +202,5 @@ function formatZoneData(feature) {
   };
 }
 
-module.exports = new GeoDataSyncCronJob();
+module.exports =  GeoDataSyncCronJob;
 module.exports.formatZoneData = formatZoneData;

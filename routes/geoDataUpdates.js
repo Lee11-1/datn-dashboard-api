@@ -8,8 +8,6 @@ const router = new Router({
 
 router.get('/', zoneController.getGeoDataUpdates.bind(zoneController));
 
-router.get('/latest', zoneController.getLatestGeoDataUpdate.bind(zoneController));
-
 router.post('/sync',authorize, zoneController.triggerGeoDataSync.bind(zoneController));
 
 router.get('/status', zoneController.getSyncStatus.bind(zoneController));

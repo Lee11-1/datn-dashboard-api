@@ -1,10 +1,10 @@
-const coreEngineCategoryApi = require('../integration/coreEngineCategoryApi');
+const coreEngineApi = require('../integration/coreEngineApi');
 
 class CategoryController {
   async createCategory(ctx) {
     try {
       const categoryData = ctx.request.body;
-      const result = await coreEngineCategoryApi.createCategory(categoryData);
+      const result = await coreEngineApi.createCategory(categoryData);
 
       ctx.status = 201;
       ctx.body = result.data;
@@ -19,86 +19,7 @@ class CategoryController {
 
   async getCategories(ctx) {
     try {
-      const result = await coreEngineCategoryApi.getCategories(ctx.request.query);
-
-      ctx.body = result.data;
-    } catch (error) {
-      ctx.status = 500;
-      ctx.body = {
-        success: false,
-        message: error.message,
-      };
-    }
-  }
-
-  async getCategoryTree(ctx) {
-    try {
-      const tree = await coreEngineCategoryApi.getCategoryTree();
-
-      ctx.body = tree;
-    } catch (error) {
-      ctx.status = 500;
-      ctx.body = {
-        success: false,
-        message: error.message,
-      };
-    }
-  }
-
-  async getRootCategories(ctx) {
-    try {
-      const result = await coreEngineCategoryApi.getRootCategories(ctx.request.query);
-
-      ctx.body = result.data;
-    } catch (error) {
-      ctx.status = 500;
-      ctx.body = {
-        success: false,
-        message: error.message,
-      };
-    }
-  }
-
-  async getCategoryById(ctx) {
-    try {
-      const id = ctx.request.body?.id ?? ctx.request.query?.id;
-
-      if (!id) {
-        ctx.status = 400;
-        ctx.body = {
-          success: false,
-          message: 'Category ID is required',
-        };
-        return;
-      }
-
-      const category = await coreEngineCategoryApi.getCategoryById(id);
-
-      ctx.body = category;
-    } catch (error) {
-      ctx.status = 404;
-      ctx.body = {
-        success: false,
-        message: error.message,
-      };
-    }
-  }
-
-  async getChildCategories(ctx) {
-    try {
-      const parentId = ctx.request.body?.parentId ?? ctx.request.query?.parentId;
-
-      if (!parentId) {
-        ctx.status = 400;
-        ctx.body = {
-          success: false,
-          message: 'Parent category ID is required',
-        };
-        return;
-      }
-
-      const result = await coreEngineCategoryApi.getChildCategories(parentId, ctx.request.query);
-
+      const result = await coreEngineApi.getCategories(ctx.request.query);
       ctx.body = result.data;
     } catch (error) {
       ctx.status = 500;
@@ -122,7 +43,7 @@ class CategoryController {
         return;
       }
 
-      const updatedCategory = await coreEngineCategoryApi.updateCategory(id, updates);
+      const updatedCategory = await coreEngineApi.updateCategory(id, updates);
 
       ctx.body = updatedCategory;
     } catch (error) {
@@ -146,86 +67,11 @@ class CategoryController {
         return;
       }
 
-      const result = await coreEngineCategoryApi.deleteCategory(category_id);
+      const result = await coreEngineApi.deleteCategory(category_id);
 
       ctx.body = result;
     } catch (error) {
       ctx.status = 404;
-      ctx.body = {
-        success: false,
-        message: error.message,
-      };
-    }
-  }
-
-  async activateCategory(ctx) {
-    try {
-      const id = ctx.request.body?.id ?? ctx.request.query?.id;
-
-      if (!id) {
-        ctx.status = 400;
-        ctx.body = {
-          success: false,
-          message: 'Category ID is required',
-        };
-        return;
-      }
-
-      const category = await coreEngineCategoryApi.activateCategory(id);
-
-      ctx.body = category;
-    } catch (error) {
-      ctx.status = 400;
-      ctx.body = {
-        success: false,
-        message: error.message,
-      };
-    }
-  }
-
-  async deactivateCategory(ctx) {
-    try {
-      const id = ctx.request.body?.id ?? ctx.request.query?.id;
-
-      if (!id) {
-        ctx.status = 400;
-        ctx.body = {
-          success: false,
-          message: 'Category ID is required',
-        };
-        return;
-      }
-
-      const category = await coreEngineCategoryApi.deactivateCategory(id);
-
-      ctx.body = category;
-    } catch (error) {
-      ctx.status = 400;
-      ctx.body = {
-        success: false,
-        message: error.message,
-      };
-    }
-  }
-
-  async reorderCategories(ctx) {
-    try {
-      const { id, ...orderData } = ctx.request.body;
-
-      if (!id) {
-        ctx.status = 400;
-        ctx.body = {
-          success: false,
-          message: 'Category ID is required',
-        };
-        return;
-      }
-
-      const category = await coreEngineCategoryApi.reorderCategories(id, orderData);
-
-      ctx.body = category;
-    } catch (error) {
-      ctx.status = 400;
       ctx.body = {
         success: false,
         message: error.message,

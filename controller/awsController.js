@@ -3,11 +3,6 @@ const fs = require('fs').promises;
 const path = require('path');
 
 class AwsController {
-  /**
-   * Upload multiple files to S3
-   * Expects: files array from multipart form + folder_name in body or query
-   * @param {Object} ctx - Koa context
-   */
   async uploadFiles(ctx) {
     try {
       const { folder_name = 'uploads', isPublic = true } = ctx.request.body;
@@ -98,11 +93,6 @@ class AwsController {
     }
   }
 
-  /**
-   * Delete file(s) from S3
-   * Supports only array of file URLs
-   * @param {Object} ctx - Koa context
-   */
   async deleteFile(ctx) {
     try {
       let fileUrls = ctx.request.body?.fileUrls || ctx.request.query?.fileUrls;
@@ -139,10 +129,6 @@ class AwsController {
     }
   }
 
-  /**
-   * Get signed URL for private file
-   * @param {Object} ctx - Koa context
-   */
   async getSignedUrl(ctx) {
     try {
       const key = ctx.request.body?.key || ctx.request.query?.key;
@@ -175,10 +161,6 @@ class AwsController {
     }
   }
 
-  /**
-   * Check if file exists
-   * @param {Object} ctx - Koa context
-   */
   async fileExists(ctx) {
     try {
       const key = ctx.request.body?.key || ctx.request.query?.key;

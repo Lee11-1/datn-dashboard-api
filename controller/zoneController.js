@@ -1,19 +1,13 @@
-const coreEngineZoneApi = require('../integration/coreEngineZoneApi');
-const geoDataSyncCronJob = require('../service/geoDataSyncCronJob');
+const coreEngineApi = require('../integration/coreEngineApi');
 
-/**
- * Zone controller to handle zone-related API requests
- * All data operations are delegated to the core engine
- */
+const GeoDataSyncCronJob = require('../service/geoDataSyncCronJob');
+
+const geoDataSyncCronJob = new GeoDataSyncCronJob(coreEngineApi);
 class ZoneController {
-  /**
-   * Create a new zone
-   */
   async createZone(ctx) {
     try {
       const zoneData = ctx.request.body;
       
-      // Validate required fields
       if (!zoneData.code || !zoneData.name || zoneData.level === undefined) {
         ctx.status = 400;
         ctx.body = {
@@ -22,8 +16,7 @@ class ZoneController {
         };
         return;
       }
-
-      const result = await coreEngineZoneApi.createZone(zoneData);
+      const result = await coreEngineApi.createZone(zoneData);
 
       ctx.status = 201;
       ctx.body = {
@@ -39,12 +32,9 @@ class ZoneController {
     }
   }
 
-  /**
-   * Get all zones with pagination and filters
-   */
   async getZones(ctx) {
     try {
-      const result = await coreEngineZoneApi.getZones(ctx.request.query);
+      const result = await coreEngineApi.getZones(ctx.request.query);
 
       ctx.body = {
         success: true,
@@ -60,107 +50,11 @@ class ZoneController {
     }
   }
 
-  /**
-   * Get zone tree structure
-   */
-  async getZoneTree(ctx) {
-    try {
-      const tree = await coreEngineZoneApi.getZoneTree();
-
-      ctx.body = {
-        success: true,
-        data: tree.data || tree
-      };
-    } catch (error) {
-      ctx.status = 500;
-      ctx.body = {
-        success: false,
-        message: error.message
-      };
-    }
-  }
-
-  /**
-   * Get zone by code
-   */
-  async getZoneByCode(ctx) {
-    try {
-      const { code } = ctx.params;
-      const result = await coreEngineZoneApi.getZoneByCode(code);
-
-      ctx.body = {
-        success: true,
-        data: result.data || result
-      };
-    } catch (error) {
-      ctx.status = 404;
-      ctx.body = {
-        success: false,
-        message: error.message
-      };
-    }
-  }
-
-  /**
-   * Get zones by level
-   */
-  async getZonesByLevel(ctx) {
-    try {
-      const { level } = ctx.params;
-      
-      if (![0, 1, 2, 3].includes(parseInt(level))) {
-        ctx.status = 400;
-        ctx.body = {
-          success: false,
-          message: 'Level must be 0, 1, 2, or 3'
-        };
-        return;
-      }
-
-      const result = await coreEngineZoneApi.getZonesByLevel(level);
-
-      ctx.body = {
-        success: true,
-        data: result.data || result
-      };
-    } catch (error) {
-      ctx.status = 500;
-      ctx.body = {
-        success: false,
-        message: error.message
-      };
-    }
-  }
-
-  /**
-   * Get zone by ID
-   */
-  async getZoneById(ctx) {
-    try {
-      const { id } = ctx.params;
-      const result = await coreEngineZoneApi.getZoneById(id);
-
-      ctx.body = {
-        success: true,
-        data: result.data || result
-      };
-    } catch (error) {
-      ctx.status = 404;
-      ctx.body = {
-        success: false,
-        message: error.message
-      };
-    }
-  }
-
-  /**
-   * Update zone
-   */
   async updateZone(ctx) {
     try {
       const { id } = ctx.params;
       const updateData = ctx.request.body;
-      const result = await coreEngineZoneApi.updateZone(id, updateData);
+      const result = await coreEngineApi.updateZone(id, updateData);
 
       ctx.body = {
         success: true,
@@ -175,13 +69,10 @@ class ZoneController {
     }
   }
 
-  /**
-   * Delete zone
-   */
   async deleteZone(ctx) {
     try {
       const { id } = ctx.params;
-      const result = await coreEngineZoneApi.deleteZone(id);
+      const result = await coreEngineApi.deleteZone(id);
 
       ctx.body = {
         success: true,
@@ -196,75 +87,9 @@ class ZoneController {
     }
   }
 
-  /**
-   * Get child zones
-   */
-  async getChildZones(ctx) {
-    try {
-      const { parentId } = ctx.params;
-      const result = await coreEngineZoneApi.getChildZones(parentId);
-
-      ctx.body = {
-        success: true,
-        data: result.data || result
-      };
-    } catch (error) {
-      ctx.status = 500;
-      ctx.body = {
-        success: false,
-        message: error.message
-      };
-    }
-  }
-
-  /**
-   * Activate zone
-   */
-  async activateZone(ctx) {
-    try {
-      const { id } = ctx.params;
-      const result = await coreEngineZoneApi.activateZone(id);
-
-      ctx.body = {
-        success: true,
-        data: result.data || result
-      };
-    } catch (error) {
-      ctx.status = 400;
-      ctx.body = {
-        success: false,
-        message: error.message
-      };
-    }
-  }
-
-  /**
-   * Deactivate zone
-   */
-  async deactivateZone(ctx) {
-    try {
-      const { id } = ctx.params;
-      const result = await coreEngineZoneApi.deactivateZone(id);
-
-      ctx.body = {
-        success: true,
-        data: result.data || result
-      };
-    } catch (error) {
-      ctx.status = 400;
-      ctx.body = {
-        success: false,
-        message: error.message
-      };
-    }
-  }
-
-  /**
-   * Get geo data update records
-   */
   async getGeoDataUpdates(ctx) {
     try {
-      const response = await coreEngineZoneApi.getZones({
+      const response = await coreEngineApi.getZones({
         ...ctx.request.query,
         endpoint: '/api/geo-data-updates'
       });
@@ -282,29 +107,6 @@ class ZoneController {
     }
   }
 
-  /**
-   * Get latest geo data update record
-   */
-  async getLatestGeoDataUpdate(ctx) {
-    try {
-      const result = await coreEngineZoneApi.getLatestGeoDataUpdate();
-
-      ctx.body = {
-        success: true,
-        data: result.data || result
-      };
-    } catch (error) {
-      ctx.status = 500;
-      ctx.body = {
-        success: false,
-        message: error.message
-      };
-    }
-  }
-
-  /**
-   * Trigger manual geo data sync
-   */
   async triggerGeoDataSync(ctx) {
     try {
       const userId = ctx.User?.id || 'MANUAL_USER';

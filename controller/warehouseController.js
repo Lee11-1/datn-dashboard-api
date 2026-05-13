@@ -1,19 +1,10 @@
-const coreEngineWarehouseApi = require('../integration/coreEngineWarehouseApi');
-
-/**
- * Warehouse controller to handle warehouse-related API requests
- * All data operations are delegated to the core engine
- */
+const coreEngineApi = require('../integration/coreEngineApi');
 class WarehouseController {
-  /**
-   * Create a new warehouse
-   * POST /api/warehouses
-   */
+
   async createWarehouse(ctx) {
     try {
       const warehouseData = ctx.request.body;
 
-      // Validate required fields
       if (!warehouseData.name || !warehouseData.code) {
         ctx.status = 400;
         ctx.body = {
@@ -23,7 +14,7 @@ class WarehouseController {
         return;
       }
 
-      const result = await coreEngineWarehouseApi.createWarehouse(warehouseData);
+      const result = await coreEngineApi.createWarehouse(warehouseData);
 
       ctx.status = 201;
       ctx.body = {
@@ -45,7 +36,7 @@ class WarehouseController {
    */
   async getWarehouses(ctx) {
     try {
-      const result = await coreEngineWarehouseApi.getWarehouses(ctx.request.query);
+      const result = await coreEngineApi.getWarehouses(ctx.request.query);
 
       ctx.body = {
         success: true,
@@ -68,7 +59,7 @@ class WarehouseController {
   async getWarehouseById(ctx) {
     try {
       const { id } = ctx.params;
-      const result = await coreEngineWarehouseApi.getWarehouseById(id);
+      const result = await coreEngineApi.getWarehouseById(id);
 
       ctx.body = {
         success: true,
@@ -92,7 +83,7 @@ class WarehouseController {
       const { id } = ctx.params;
       const updateData = ctx.request.body;
 
-      const result = await coreEngineWarehouseApi.updateWarehouse(id, updateData);
+      const result = await coreEngineApi.updateWarehouse(id, updateData);
 
       ctx.body = {
         success: true,
@@ -114,7 +105,7 @@ class WarehouseController {
   async deleteWarehouse(ctx) {
     try {
       const { id } = ctx.params;
-      const result = await coreEngineWarehouseApi.deleteWarehouse(id);
+      const result = await coreEngineApi.deleteWarehouse(id);
 
       ctx.body = {
         success: true,

@@ -35,12 +35,9 @@ async function run() {
     process.exit(0);
   }
 
-  console.log(`Geo sync worker started by ${userId} (pid ${process.pid})`);
-
   try {
     if (typeof job.syncGeoData === 'function') {
       const res = await job.syncGeoData(userId);
-      console.log('Geo sync worker finished:', res && res.success ? 'success' : 'finished');
     } else {
       console.error('Geo sync worker: syncGeoData not available');
     }

@@ -1,15 +1,12 @@
-const coreEngineCustomerApi = require('../integration/coreEngineCustomerApi');
+const coreEngineApi = require('../integration/coreEngineApi');
 
 class CustomerController {
-  /**
-   * Create a new customer
-   * POST /api/customers
-   */
+
   async createCustomer(ctx) {
     try {
       const customerData = ctx.request.body;
 
-      const result = await coreEngineCustomerApi.createCustomer(customerData);
+      const result = await coreEngineApi.createCustomer(customerData);
 
       ctx.status = 201;
       ctx.body = result;
@@ -22,15 +19,11 @@ class CustomerController {
     }
   }
 
-  /**
-   * Get all customers with filtering and pagination
-   * GET /api/customers?limit=10&offset=0&phone=...&email=...&zoneId=...
-   */
   async getCustomers(ctx) {
     try {
       const query = ctx.request.query;
 
-      const result = await coreEngineCustomerApi.getCustomers(query);
+      const result = await coreEngineApi.getCustomers(query);
 
       ctx.body = result;
     } catch (error) {
@@ -42,10 +35,6 @@ class CustomerController {
     }
   }
 
-  /**
-   * Get customer by ID
-   * GET /api/customers/:id
-   */
   async getCustomerById(ctx) {
     try {
       const { id } = ctx.params;
@@ -59,7 +48,7 @@ class CustomerController {
         return;
       }
 
-      const result = await coreEngineCustomerApi.getCustomerById(id);
+      const result = await coreEngineApi.getCustomerById(id);
 
       ctx.body = result;
     } catch (error) {
@@ -71,10 +60,6 @@ class CustomerController {
     }
   }
 
-  /**
-   * Update customer
-   * PUT /api/customers/:id
-   */
   async updateCustomer(ctx) {
     try {
       const updates = ctx.request.body;
@@ -89,7 +74,7 @@ class CustomerController {
         return;
       }
 
-      const result = await coreEngineCustomerApi.updateCustomer(id, updates);
+      const result = await coreEngineApi.updateCustomer(id, updates);
 
       ctx.body = result;
     } catch (error) {
@@ -101,10 +86,6 @@ class CustomerController {
     }
   }
 
-  /**
-   * Delete customer
-   * DELETE /api/customers/:id
-   */
   async deleteCustomer(ctx) {
     try {
       const id  = ctx.request.body?.id || ctx.request.query?.id;
@@ -118,7 +99,7 @@ class CustomerController {
         return;
       }
 
-      const result = await coreEngineCustomerApi.deleteCustomer(id);
+      const result = await coreEngineApi.deleteCustomer(id);
 
       ctx.body = result;
     } catch (error) {
@@ -130,10 +111,7 @@ class CustomerController {
     }
   }
 
-  /**
-   * Search customers
-   * GET /api/customers/search/:term
-   */
+
   async searchCustomers(ctx) {
     try {
       const { term } = ctx.params;
@@ -147,7 +125,7 @@ class CustomerController {
         return;
       }
 
-      const result = await coreEngineCustomerApi.searchCustomers(term);
+      const result = await coreEngineApi.searchCustomers(term);
 
       ctx.body = result;
     } catch (error) {
@@ -159,10 +137,6 @@ class CustomerController {
     }
   }
 
-  /**
-   * Get customers by zone
-   * GET /api/customers/zone/:zoneId
-   */
   async getCustomersByZone(ctx) {
     try {
       const { zoneId } = ctx.params;
@@ -177,7 +151,7 @@ class CustomerController {
         return;
       }
 
-      const result = await coreEngineCustomerApi.getCustomersByZone(zoneId, query);
+      const result = await coreEngineApi.getCustomersByZone(zoneId, query);
 
       ctx.body = result;
     } catch (error) {

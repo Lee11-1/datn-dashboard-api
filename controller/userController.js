@@ -1,10 +1,10 @@
-const userService = require('../service/userServices');
+const coreEngineApi = require('../integration/coreEngineApi');
 
 class UserController {
   async createUser(ctx) {
     try {
       const userData = ctx.request.body;
-      const savedUser = await userService.createUser(userData);
+      const savedUser = await coreEngineApi.createUser(userData);
       const { passwordHash: _, ...userResponse } = savedUser;
 
       ctx.status = 201;
@@ -20,7 +20,7 @@ class UserController {
 
   async getUsers(ctx) {
     try {
-      const result = await userService.getUsers(ctx.query);
+      const result = await coreEngineApi.getUsers(ctx.query);
 
       ctx.body = {
         success: true,
@@ -39,7 +39,7 @@ class UserController {
   async getUserById(ctx) {
     try {
       const { id } = ctx.request.query;
-      const result = await userService.getUserById(id);
+      const result = await coreEngineApi.getUserById(id);
 
       ctx.body = result;
     } catch (error) {
@@ -54,7 +54,7 @@ class UserController {
   async updateUser(ctx) {
     try {
       const { id, ...updates } = ctx.request.body;
-      const updatedUser = await userService.updateUser(id, updates);
+      const updatedUser = await coreEngineApi.updateUser(id, updates);
       const { passwordHash: _, ...userResponse } = updatedUser;
 
       ctx.body = userResponse ;
@@ -70,7 +70,7 @@ class UserController {
   async deleteUser(ctx) {
     try {
       const { id } = ctx.request.query;
-      await userService.deleteUser(id);
+      await coreEngineApi.deleteUser(id);
 
       ctx.body = {
         success: true,

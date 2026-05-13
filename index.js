@@ -10,7 +10,10 @@ const config = require("./config");
 const { log } = require("./middleware/index");
 const { createServer } = require("http");
 const { initSocket } = require("./socket/socketHandler.js");
-const geoDataSyncCronJob = require("./service/geoDataSyncCronJob");
+const coreEngineApi = require('./integration/coreEngineApi');
+const GeoDataSyncCronJob = require('./service/geoDataSyncCronJob');
+const geoDataSyncCronJob = new GeoDataSyncCronJob(coreEngineApi);
+
 require("./config/database"); 
 
 const app = new Koa();
