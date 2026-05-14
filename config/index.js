@@ -25,6 +25,8 @@ let custom = {
     redisPassword: process.env.REDIS_PASSWORD,
     redisDb: process.env.REDIS_DB,
     useOwner: process.env.USE_OWNER || false,
+    emailUser: process.env.EMAIL_USER,
+    emailKey: process.env.EMAIL_KEY,
     baseUrl: {
     },
     auth: {
