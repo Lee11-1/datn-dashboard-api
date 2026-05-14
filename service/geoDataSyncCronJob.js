@@ -1,49 +1,29 @@
 const cron = require('node-cron');
 const gadmService = require('./gadmService');
-const { spawn } = require('child_process');
-const path = require('path');
+const AsyncTaskManager = require('./asyncTaskManager');
 
-class GeoDataSyncCronJob {
+class GeoDataSyncCronJob extends AsyncTaskManager {
   constructor(coreEngineZoneApi) {
+    super('GeoDataSync', 'geoDataSyncWorker.js');
     this.cronJob = null;
-    this.isRunning = false;
-    this.lastSyncTime = null;
     this.coreEngineZoneApi = coreEngineZoneApi;
-    }
-
-  spawnWorker(userId = '0fa65e3a-05f3-489e-9f11-f9c41ec949ca') {
-    try {
-      const workerPath = path.join(__dirname, 'geoDataSyncWorker.js');
-      const child = spawn(process.execPath, [workerPath, userId], {
-        detached: true,
-        stdio: 'ignore',
-        env: { ...process.env, SYNC_TRIGGERED_BY: userId }
-      });
-      child.unref();
-      console.log(` Spawned geo sync worker (pid ${child.pid})`);
-      return child.pid;
-    } catch (err) {
-      console.error(' Failed to spawn geo sync worker:', err.message);
-      return null;
-    }
   }
 
   start() {
-    
     this.cronJob = cron.schedule('0 2 1 * *', () => {
-      console.log('\n Starting scheduled geo data sync from GADM... (spawning worker)');
-      this.spawnWorker();
+      this.spawnWorker({ userId: 'SYSTEM_SCHEDULED' });
     });
   }
 
   async triggerManualSync(userId = '0fa65e3a-05f3-489e-9f11-f9c41ec949ca') {
-    const pid = this.spawnWorker(userId);
-    return { spawned: !!pid, pid };
+    return this.triggerManualExecution({ userId });
   }
 
-  async syncGeoData(userId = '0fa65e3a-05f3-489e-9f11-f9c41ec949ca') {
+  async executeTask(jobData = {}) {
+    const userId = jobData.userId || '0fa65e3a-05f3-489e-9f11-f9c41ec949ca';
+    
     if (this.isRunning) {
-      console.warn('  Sync already in progress, skipping');
+      console.warn('[GeoDataSync] Sync already in progress, skipping');
       return;
     }
 
@@ -92,9 +72,8 @@ class GeoDataSyncCronJob {
         processedRecords: syncResult.statistics?.processedRecords || wards.length
       };
 
-     
       if (syncStats.errorRecords > 0) {
-        console.log(`   - Errors: ${syncStats.errorRecords}`);
+        console.log(`[GeoDataSync] - Errors: ${syncStats.errorRecords}`);
       }
 
       const endTime = new Date();
@@ -109,8 +88,8 @@ class GeoDataSyncCronJob {
         triggeredBy: userId
       });
 
-      this.lastSyncTime = new Date();
-      console.log(`\n Geo data sync completed successfully (${duration}ms)`);
+      this.lastExecutionTime = new Date();
+      console.log(`[GeoDataSync] Completed successfully (${duration}ms)`);
       
       return {
         success: true,
@@ -120,7 +99,7 @@ class GeoDataSyncCronJob {
       };
 
     } catch (error) {
-      console.error(`\n Error during geo data sync: ${error.message}`);
+      console.error(`[GeoDataSync] Error: ${error.message}`);
       
       if (updateRecordId) {
         try {
@@ -134,7 +113,7 @@ class GeoDataSyncCronJob {
             triggeredBy: userId
           });
         } catch (updateError) {
-          console.error(`Failed to update error record: ${updateError.message}`);
+          console.error(`[GeoDataSync] Failed to update error record: ${updateError.message}`);
         }
       }
 
@@ -148,24 +127,27 @@ class GeoDataSyncCronJob {
       this.isRunning = false;
     }
   }
-
   stop() {
+    super.stop();
     if (this.cronJob) {
       this.cronJob.stop();
-      console.log(' Geo data sync cron job stopped');
+      console.log('[GeoDataSync] Cron job stopped');
     }
   }
 
-
   getStatus() {
     return {
-      isRunning: this.isRunning,
-      lastSyncTime: this.lastSyncTime,
+      ...super.getStatus(),
       cronActive: this.cronJob !== null
     };
   }
 }
 
+/**
+ * Format zone data from GADM feature
+ * @param {Object} feature - GeoJSON feature from GADM
+ * @returns {Object} Formatted zone data
+ */
 function formatZoneData(feature) {
   const props = feature && feature.properties ? feature.properties : {};
   const geometry = feature && feature.geometry ? feature.geometry : null;
@@ -202,5 +184,5 @@ function formatZoneData(feature) {
   };
 }
 
-module.exports =  GeoDataSyncCronJob;
+module.exports = GeoDataSyncCronJob;
 module.exports.formatZoneData = formatZoneData;
