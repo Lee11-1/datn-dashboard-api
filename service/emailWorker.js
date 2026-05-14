@@ -59,9 +59,7 @@ function getJobData() {
   return null;
 }
 
-/**
- * Get SMTP configuration from environment
- */
+
 function getSmtpConfig() {
   return {
     host: process.env.SMTP_HOST || 'smtp.gmail.com',
@@ -74,9 +72,6 @@ function getSmtpConfig() {
   };
 }
 
-/**
- * Send email using nodemailer
- */
 async function sendEmail(jobData, smtpConfig) {
   try {
     const transporter = nodemailer.createTransport(smtpConfig);
@@ -104,9 +99,6 @@ async function sendEmail(jobData, smtpConfig) {
   }
 }
 
-/**
- * Main worker execution
- */
 async function run() {
   const jobData = getJobData();
 

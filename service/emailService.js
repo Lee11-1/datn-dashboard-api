@@ -16,9 +16,7 @@ class EmailService extends AsyncTaskManager {
     this.initializeTransporter();
   }
 
-  /**
-   * Initialize email transporter with SMTP configuration
-   */
+
   initializeTransporter() {
     try {
       this.transporter = nodemailer.createTransport(this.smtpConfig);
@@ -102,7 +100,7 @@ class EmailService extends AsyncTaskManager {
   async sendEmailDirect(emailData = {}) {
     try {
       const mailOptions = {
-        from: emailData.from || this.smtpConfig.auth?.user || 'noreply@system.com',
+        from:  this.smtpConfig.auth?.user ,
         to: emailData.to,
         subject: emailData.subject,
         html: emailData.html,
@@ -119,7 +117,7 @@ class EmailService extends AsyncTaskManager {
         timestamp: new Date()
       };
     } catch (error) {
-      console.error(`[EmailService] Error sending email: ${error.message}`);
+      console.error(`[EmailService] Error sending email directly: ${error.message}`);
       return {
         success: false,
         error: error.message

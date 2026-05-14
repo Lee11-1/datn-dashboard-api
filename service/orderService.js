@@ -1,6 +1,10 @@
 const coreEngineApi = require('../integration/coreEngineApi');
 class OrderService {
-  async approve(orderId, approvedBy, note){
+  constructor(emailService) {
+    this.emailService = emailService;
+  }
+  async approve(query){
+      const { approvedBy, note = '', orderId, userId, orderCode } = query; 
       const order_detail = await coreEngineApi.getOrderItems(orderId);
       const data = order_detail.data
       let updateData = []
@@ -25,9 +29,23 @@ class OrderService {
         throw new Error(`Failed to update inventory for product ${item.productName} in warehouse ${item.warehouseId}`);
       }
       const result = await coreEngineApi.approveOrder(orderId, approvedBy, note);
+
+      const username = 'Trung';
+      const user_detail = await coreEngineApi.getUserById(userId);
+      const emailId = await this.emailService.queueEmail({
+        to: 'hatrungngn1@gmail.com',
+        subject: 'Your order has been approved',
+        html: `
+          <h1>Hello ${user_detail.data.fullName}!</h1>
+          <p>You have a new order that has been approved.</p>
+          <p>Order Code: ${orderCode}</p>
+          <p>Please check your order details for more information.</p>
+        `,
+        text: `Your order ${orderCode} has been approved.`
+      });
       return result;
     }
   }
 
 
-module.exports = new OrderService();
+module.exports = OrderService;

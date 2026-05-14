@@ -2,7 +2,6 @@ const axios = require('axios');
 
 class GADMService {
   constructor() {
-    // GADM API base URL format: https://geodata.ucdavis.edu/gadm/gadm4.1/json/gadm41_VNM_{level}.json
     this.baseUrl = 'https://geodata.ucdavis.edu/gadm/gadm4.1/json/gadm41';
     this.vietnamCode = 'VNM';
   }

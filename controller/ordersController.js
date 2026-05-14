@@ -1,5 +1,21 @@
 const coreEngineApi = require('../integration/coreEngineApi');
-const orderService = require('../service/orderService');
+const OrderService = require('../service/orderService');
+
+const EmailService = require('../service/emailService');
+
+const smtpConfig = {
+  host: 'smtp.gmail.com',
+  port: 587,
+  secure: false,
+  auth: {
+    user:  'hatrungngn2@gmail.com',
+    pass:  'dwfx qyta wvdo rvma'
+  }
+};
+
+const emailService = new EmailService(smtpConfig);
+
+const orderService = new OrderService(emailService);
 class OrdersController {
   async getOrders(ctx) {
     try {
@@ -74,7 +90,7 @@ class OrdersController {
 
       ctx.body = {
         success: true,
-        message: `Order ${status} successfully`,
+        message: `Order approved successfully`,
         data: result.data,
       };
     } catch (error) {
@@ -115,7 +131,7 @@ class OrdersController {
 
   async approveOrder(ctx) {
     try {
-      const { approvedBy, note = '', orderId } = ctx.request.body;
+      const { approvedBy, note = '', orderId, userId, orderCode } = ctx.request.body;
 
       if (!approvedBy) {
         ctx.status = 400;
@@ -126,7 +142,7 @@ class OrdersController {
         return;
       }
 
-      const result = await orderService.approve(orderId, approvedBy, note);
+      const result = await orderService.approve(ctx.request.body);
 
       ctx.body = {
         success: true,
