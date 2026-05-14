@@ -122,18 +122,11 @@ function checkGeoDataStatus() {
   });
 }
 
-/**
- * 4. Stop geo data sync
- */
+
 function stopGeoDataSync() {
   geoDataSync.stop();
 }
 
-// ==================== Custom Task Service (Template) ====================
-
-/**
- * Example: Creating a custom task service
- */
 const AsyncTaskManager = require('./service/asyncTaskManager');
 
 class ReportGenerationService extends AsyncTaskManager {

@@ -1,8 +1,7 @@
 const coreEngineApi = require('../integration/coreEngineApi');
 const OrderService = require('../service/orderService');
-
 const EmailService = require('../service/emailService');
-
+const BaseController = require('./baseController');
 const smtpConfig = {
   host: 'smtp.gmail.com',
   port: 587,
@@ -14,13 +13,29 @@ const smtpConfig = {
 };
 
 const emailService = new EmailService(smtpConfig);
-
 const orderService = new OrderService(emailService);
-class OrdersController {
-  async getOrders(ctx) {
+class OrdersController extends BaseController {
+  constructor() {
+    super();
+  }
+  getOrders = async (ctx) => {
     try {
+      const {customerId, status, page = 1, limit = 10} = ctx.request.query;
+      if (customerId){
+          const data = await this.redis.get(`orders:${customerId}`);
+          if (data) {
+            ctx.body = {
+              success: true,
+              data: JSON.parse(data)
+            };
+            return;
+          }
+      }
       const result = await coreEngineApi.getOrders(ctx.request.query);
 
+      if (customerId){
+        await this.redis.set(`orders:${customerId}`, JSON.stringify(result.data), 'EX', 3600);
+      }
       ctx.body = {
         success: true,
         data: result.data,
@@ -35,11 +50,30 @@ class OrdersController {
     }
   }
 
-  async getOrderDetail(ctx) {
+  getOrderDetail = async (ctx) => {
     try {
       const { orderId } = ctx.request.query;
+      if (!orderId) {
+        ctx.status = 400;
+        ctx.body = {
+          success: false,
+          message: 'Missing orderId'
+        };
+        return;
+      }
+
+      const data = await this.redis.get(`order_detail:${orderId}`);
+      if (data) {
+        ctx.body = {
+          success: true,
+          data: JSON.parse(data)
+        };
+        return;
+      }
 
       const result = await coreEngineApi.getOrderDetail(orderId);
+
+      await this.redis.set(`order_detail:${orderId}`, JSON.stringify(result.data), 'EX', 3600);
 
       ctx.body = {
         success: true,
@@ -54,7 +88,7 @@ class OrdersController {
     }
   }
 
-  async updateOrderStatus(ctx) {
+  updateOrderStatus = async (ctx) => {
     try {
       const { orderId } = ctx.params;
       const { status, rejectReason, rejectNote, approvedBy, note } = ctx.request.body;
@@ -103,7 +137,7 @@ class OrdersController {
   }
 
   
-  async getOrdersByUser(ctx) {
+  getOrdersByUser = async (ctx) => {
     try {
       const { userId, page = 1, limit = 10 } = ctx.request.query;
       if (!userId) {
@@ -129,7 +163,7 @@ class OrdersController {
     }
   }
 
-  async approveOrder(ctx) {
+  approveOrder = async (ctx) => {
     try {
       const { approvedBy, note = '', orderId, userId, orderCode } = ctx.request.body;
 
@@ -158,7 +192,7 @@ class OrdersController {
     }
   }
 
-  async rejectOrder(ctx) {
+  rejectOrder = async (ctx) => {
     try {
       const { rejectReason, rejectNote = '', orderId } = ctx.request.body;
 
