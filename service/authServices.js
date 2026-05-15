@@ -5,12 +5,7 @@ const coreEngineApi = require('../integration/coreEngineApi');
  * No longer handles database operations directly
  */
 class AuthService {
-  /**
-   * Login - delegates to core-engine
-   * @param {string} username or email
-   * @param {string} password
-   * @returns {Promise<Object>} { accessToken, refreshToken, user }
-   */
+
   async login(username, password) {
     const response = await coreEngineApi.authenticate({
       email: username,
@@ -24,11 +19,6 @@ class AuthService {
     return response.data;
   }
 
-  /**
-   * Refresh access token - delegates to core-engine
-   * @param {string} refreshToken
-   * @returns {Promise<Object>} { accessToken, user }
-   */
   async refreshAccessToken(refreshToken) {
     const response = await coreEngineApi.refreshToken(refreshToken);
 
@@ -39,11 +29,6 @@ class AuthService {
     return response.data;
   }
 
-  /**
-   * Logout - delegates to core-engine
-   * @param {string} refreshToken
-   * @returns {Promise<void>}
-   */
   async logout(refreshToken) {
     const response = await coreEngineApi.logout(refreshToken);
 

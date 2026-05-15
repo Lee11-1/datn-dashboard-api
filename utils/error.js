@@ -26,7 +26,6 @@ const InvalidKeyValue = createErrorClass('InvalidKeyValue', function e(k, v) {
     this.message = `${k} [${v}] invalid`
 })
 
-/* Invalid parameter was supplied */
 const InvalidRequestError = createErrorClass('InvalidRequestError', function e(
     err
 ) {
@@ -42,7 +41,6 @@ const InvalidResponseError = createErrorClass(
     }
 )
 
-/* An authentication error occured when requesting API */
 const AuthenticationError = createErrorClass('AuthenticationError')
 
 

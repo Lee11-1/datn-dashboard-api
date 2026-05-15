@@ -1,7 +1,6 @@
 require('dotenv').config();
 const AWS = require('aws-sdk');
 
-// Configure AWS
 AWS.config.update({
   accessKeyId: process.env.AWS_ACCESS_KEY_ID,
   secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
@@ -16,14 +15,7 @@ const s3 = new AWS.S3({
 const S3_BUCKET = process.env.S3_BUCKET_NAME;
 
 class AwsService {
-  /**
-   * Upload file to S3
-   * @param {Buffer} fileBuffer - File buffer
-   * @param {string} fileName - File name
-   * @param {string} folder - Folder in S3 (e.g., 'users', 'products')
-   * @param {string} contentType - MIME type
-   * @returns {Promise<string>} - S3 URL
-   */
+
   async uploadFile(fileBuffer, fileName, folder = 'uploads', contentType = 'application/octet-stream', isPublic = true) {
     try {
       const key = `${folder}/${Date.now()}-${fileName}`;
@@ -45,12 +37,6 @@ class AwsService {
     }
   }
 
-  /**
-   * Get signed URL for private files
-   * @param {string} key - S3 object key
-   * @param {number} expires - Expiration time in seconds
-   * @returns {string} - Signed URL
-   */
   getSignedUrl(key, expires = 3600) {
     try {
       return s3.getSignedUrl('getObject', {
@@ -63,11 +49,6 @@ class AwsService {
     }
   }
 
-  /**
-   * Delete file from S3
-   * @param {string} fileUrl - Full S3 URL or key
-   * @returns {Promise<void>}
-   */
   async deleteFile(fileUrl) {
     try {
       const key = fileUrl.includes('amazonaws.com') 
@@ -83,11 +64,6 @@ class AwsService {
     }
   }
 
-  /**
-   * Delete multiple files from S3
-   * @param {Array<string>} fileUrls - Array of S3 URLs or keys
-   * @returns {Promise<Object>} - Object with deletedFiles array and errors array
-   */
   async deleteFiles(fileUrls) {
     try {
       if (!Array.isArray(fileUrls) || fileUrls.length === 0) {
@@ -128,11 +104,6 @@ class AwsService {
     }
   }
 
-  /**
-   * Check if file exists
-   * @param {string} key - S3 object key
-   * @returns {Promise<boolean>}
-   */
   async fileExists(key) {
     try {
       await s3.headObject({ Bucket: S3_BUCKET, Key: key }).promise();
@@ -145,12 +116,6 @@ class AwsService {
     }
   }
 
-  /**
-   * List files in a folder
-   * @param {string} folder - Folder path in S3
-   * @param {number} maxKeys - Maximum number of keys to return
-   * @returns {Promise<Array>} - List of files
-   */
   async listFiles(folder, maxKeys = 100) {
     try {
       const result = await s3.listObjectsV2({
@@ -165,12 +130,6 @@ class AwsService {
     }
   }
 
-  /**
-   * Copy file in S3
-   * @param {string} sourceKey - Source file key
-   * @param {string} destKey - Destination file key
-   * @returns {Promise<void>}
-   */
   async copyFile(sourceKey, destKey) {
     try {
       await s3.copyObject({
@@ -183,11 +142,6 @@ class AwsService {
     }
   }
 
-  /**
-   * Get file metadata
-   * @param {string} key - S3 object key
-   * @returns {Promise<Object>} - File metadata
-   */
   async getFileMetadata(key) {
     try {
       const metadata = await s3.headObject({

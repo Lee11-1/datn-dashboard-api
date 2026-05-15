@@ -273,6 +273,14 @@ class CoreEngineApi {
     });
   }
 
+   async updateInventories(updateData) {
+     return this.doRequest(`/inventory/batch-update`, {
+      method: 'post',
+      payload: updateData
+    });
+
+  }
+
   async getOrders(query) {
     return this.doRequest('/api/orders', {
       method: 'get',
