@@ -24,25 +24,22 @@ class OrderService {
           })
         }
       }
-      const result_inventory = await coreEngineApi.updateInventories({inventories: updateData});
-      if (result_inventory.success !== true)  {
-        throw new Error(`Failed to update inventory for product ${item.productName} in warehouse ${item.warehouseId}`);
+      const result = await coreEngineApi.approveOrder(orderId, approvedBy, note,  updateData);
+      if (result.success) {
+        const username = 'Trung';
+        const user_detail = await coreEngineApi.getUserById(userId);
+        const emailId = await this.emailService.queueEmail({
+          to: user_detail.data.email,
+          subject: 'Your order has been approved',
+          html: `
+            <h1>Hello ${user_detail.data.fullName}!</h1>
+            <p>You have a new order that has been approved.</p>
+            <p>Order Code: ${orderCode}</p>
+            <p>Please check your order details for more information.</p>
+          `,
+          text: `Your order ${orderCode} has been approved.`
+        });
       }
-      const result = await coreEngineApi.approveOrder(orderId, approvedBy, note);
-
-      const username = 'Trung';
-      const user_detail = await coreEngineApi.getUserById(userId);
-      const emailId = await this.emailService.queueEmail({
-        to: user_detail.data.email,
-        subject: 'Your order has been approved',
-        html: `
-          <h1>Hello ${user_detail.data.fullName}!</h1>
-          <p>You have a new order that has been approved.</p>
-          <p>Order Code: ${orderCode}</p>
-          <p>Please check your order details for more information.</p>
-        `,
-        text: `Your order ${orderCode} has been approved.`
-      });
       return result;
     }
   }

@@ -3,10 +3,10 @@ const gadmService = require('./gadmService');
 const AsyncTaskManager = require('./asyncTaskManager');
 
 class GeoDataSyncCronJob extends AsyncTaskManager {
-  constructor(coreEngineZoneApi) {
+  constructor(coreEngineApi) {
     super('GeoDataSync', 'geoDataSyncWorker.js');
     this.cronJob = null;
-    this.coreEngineZoneApi = coreEngineZoneApi;
+    this.coreEngineApi = coreEngineApi;
   }
 
   start() {
@@ -15,12 +15,12 @@ class GeoDataSyncCronJob extends AsyncTaskManager {
     });
   }
 
-  async triggerManualSync(userId = '0fa65e3a-05f3-489e-9f11-f9c41ec949ca') {
+  async triggerManualSync(userId = '6d4493e1-7e8b-4c09-a72b-b555bb754344') {
     return this.triggerManualExecution({ userId });
   }
 
   async executeTask(jobData = {}) {
-    const userId = jobData.userId || '0fa65e3a-05f3-489e-9f11-f9c41ec949ca';
+    const userId = jobData.userId || '6d4493e1-7e8b-4c09-a72b-b555bb754344';
     
     if (this.isRunning) {
       console.warn('[GeoDataSync] Sync already in progress, skipping');
@@ -42,7 +42,8 @@ class GeoDataSyncCronJob extends AsyncTaskManager {
 
     try {
       const version = new Date().toISOString().split('T')[0]; 
-      const updateRecord = await this.coreEngineZoneApi.createGeoDataUpdate({
+      console.log('create update record');
+      const updateRecord = await this.coreEngineApi.createGeoDataUpdate({
         source: 'gadm',
         version,
         zonesAdded: 0,
@@ -53,7 +54,7 @@ class GeoDataSyncCronJob extends AsyncTaskManager {
         triggeredBy: userId
       });
       updateRecordId = updateRecord.data?.id || updateRecord.id;
-      
+      console.log('updateRecordId', updateRecordId);
       const rawWards = await gadmService.fetchWards();
       const wards = Array.isArray(rawWards) ? rawWards.map(formatZoneData) : [];
       syncStats.totalRecords = wards.length;
@@ -65,7 +66,7 @@ class GeoDataSyncCronJob extends AsyncTaskManager {
         userId
       };
 
-      const syncResult = await this.coreEngineZoneApi.syncZones(syncPayload);
+      const syncResult = await this.coreEngineApi.syncZones(syncPayload);
       syncStats = {
         ...syncStats,
         ...syncResult.statistics,
@@ -79,7 +80,7 @@ class GeoDataSyncCronJob extends AsyncTaskManager {
       const endTime = new Date();
       const duration = endTime - startTime;
       
-      await this.coreEngineZoneApi.updateGeoDataUpdate(updateRecordId, {
+      await this.coreEngineApi.updateGeoDataUpdate(updateRecordId, {
         status: syncStats.errorRecords > 0 ? 'COMPLETED_WITH_ERRORS' : 'COMPLETED',
         zonesAdded: syncStats.insertedRecords,
         zonesUpdated: syncStats.updatedRecords,
@@ -103,7 +104,7 @@ class GeoDataSyncCronJob extends AsyncTaskManager {
       
       if (updateRecordId) {
         try {
-          await this.coreEngineZoneApi.updateGeoDataUpdate(updateRecordId, {
+          await this.coreEngineApi.updateGeoDataUpdate(updateRecordId, {
             status: 'FAILED',
             errorDetail: [{
               code: 'SYNC_FAILED',

@@ -3,10 +3,11 @@ const fsSync = require('fs');
 const os = require('os');
 const path = require('path');
 const gadmService = require('./gadmService');
+const coreEngineApi = require('../integration/coreEngineApi');
 
 const LOCK_NAME = 'geo_data_sync.lock';
 const lockPath = path.join(os.tmpdir(), LOCK_NAME);
-
+console.log('============');
 function getJobData() {
   try {
     if (process.env.JOB_DATA) {
@@ -80,8 +81,11 @@ function formatZoneData(feature) {
 }
 
 async function run() {
+  console.log('WORKER START');
+  console.log('JOB:', process.env.JOB_DATA);
   const jobData = getJobData();
   const userId = jobData.userId || 'SYSTEM';
+    await releaseLock();
 
   const locked = await obtainLock();
   if (!locked) {
@@ -93,8 +97,8 @@ async function run() {
     console.log(`[GeoDataSyncWorker] Starting geo data sync (triggered by ${userId})`);
 
     const GeoDataSyncCronJob = require('./geoDataSyncCronJob');
-    
-    
+    const geoDataSync = new GeoDataSyncCronJob(coreEngineApi);
+    const data = await geoDataSync.executeTask();
     console.log('[GeoDataSyncWorker] Geo sync completed');
   } catch (err) {
     console.error('[GeoDataSyncWorker] Error:', err && err.message ? err.message : err);

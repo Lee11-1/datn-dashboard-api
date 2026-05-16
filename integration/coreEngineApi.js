@@ -314,13 +314,14 @@ class CoreEngineApi {
     });
   }
 
-  async approveOrder(orderId, approvedBy, note = '') {
-    return this.doRequest(`/api/orders/${orderId}/status`, {
+  async approveOrder(orderId, approvedBy, note = '', inventories) {
+    return this.doRequest(`/api/orders/${orderId}/approve`, {
       method: 'patch',
       payload: {
         status: 'approved',
         approvedBy,
-        note
+        note,
+        inventories
       }
     });
   }

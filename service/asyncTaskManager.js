@@ -28,8 +28,8 @@ class AsyncTaskManager {
       const jobDataStr = JSON.stringify(jobData);
       
       const child = spawn(process.execPath, [workerPath, jobDataStr], {
-        detached: true,
-        stdio: 'ignore',
+        detached: false,
+        stdio: 'inherit',
         env: {
         ...process.env,
         TASK_NAME: this.taskName,
