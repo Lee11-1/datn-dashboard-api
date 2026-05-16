@@ -33,7 +33,7 @@ class OrderService {
       const username = 'Trung';
       const user_detail = await coreEngineApi.getUserById(userId);
       const emailId = await this.emailService.queueEmail({
-        to: 'hatrungngn1@gmail.com',
+        to: user_detail.data.email,
         subject: 'Your order has been approved',
         html: `
           <h1>Hello ${user_detail.data.fullName}!</h1>
@@ -46,6 +46,5 @@ class OrderService {
       return result;
     }
   }
-
 
 module.exports = OrderService;

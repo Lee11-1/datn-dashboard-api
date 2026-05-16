@@ -31,27 +31,36 @@ class AsyncTaskManager {
         detached: true,
         stdio: 'ignore',
         env: {
-          ...process.env,
-          TASK_NAME: this.taskName,
-          JOB_DATA: jobDataStr
-        }
+        ...process.env,
+        TASK_NAME: this.taskName,
+        JOB_DATA: jobDataStr,
+        SMTP_HOST: this.smtpConfig?.host,
+        SMTP_PORT: String(this.smtpConfig?.port || 587),
+        SMTP_SECURE: String(this.smtpConfig?.secure || false),
+        SMTP_USER: this.smtpConfig?.auth?.user,
+        SMTP_PASS: this.smtpConfig?.auth?.pass
+      }
       });
 
       child.unref();
 
-      // Track active worker
       this.activeWorkers.set(child.pid, {
         pid: child.pid,
         startTime: new Date(),
         jobData
       });
+      child.on('spawn', () => {
+        console.log(`Worker ${child.pid} started`);
+      });
 
-      console.log(`[${this.taskName}] Spawned worker (pid ${child.pid})`);
+      child.on('error', (err) => {
+        console.error('Spawn error:', err);
+      });
 
-      // Auto-cleanup after worker likely completes (configurable timeout)
-      setTimeout(() => {
+      child.on('exit', (code, signal) => {
+        console.log(`Worker ${child.pid} exited code=${code} signal=${signal}`);
         this.activeWorkers.delete(child.pid);
-      }, 3600000); // 1 hour default
+      });
 
       return child.pid;
     } catch (err) {

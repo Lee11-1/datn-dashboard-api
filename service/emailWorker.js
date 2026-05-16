@@ -1,3 +1,5 @@
+console.log('EMAIL WORKER LOADED');
+
 const fs = require('fs').promises;
 const fsSync = require('fs');
 const os = require('os');
@@ -5,11 +7,6 @@ const path = require('path');
 const nodemailer = require('nodemailer');
 
 const LOCK_DIR = path.join(os.tmpdir(), 'email_service_locks');
-
-/**
- * Email Worker - Executes email sending tasks in a separate process
- * Handles locking to prevent duplicate sends
- */
 
 async function ensureLockDir() {
   try {

@@ -177,6 +177,10 @@ class OrdersController extends BaseController {
       }
 
       const result = await orderService.approve(ctx.request.body);
+      const data = await this.redis.get(`order_detail:${orderId}`);
+      if (data) {
+        await this.redis.del(`order_detail:${orderId}`);
+      }
 
       ctx.body = {
         success: true,
