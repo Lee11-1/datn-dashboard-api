@@ -10,6 +10,8 @@ router.post('/', authorize, scheduleController.createSchedule.bind(scheduleContr
 
 router.get('/', authorize, scheduleController.getSchedules.bind(scheduleController));
 
+router.get('/get-by-id', authorize, scheduleController.getScheduleById.bind(scheduleController));
+
 router.get('/zone/:zoneId', authorize, scheduleController.getSchedulesByZone.bind(scheduleController));
 
 router.get('/user/:userId', authorize, scheduleController.getSchedulesByUser.bind(scheduleController));

@@ -424,6 +424,12 @@ class CoreEngineApi {
       payload: query
     });
   }
+  
+  async getScheduleById(id) {
+    return this.doRequest(`/api/schedules/${id}`, {
+      method: 'get'
+    });
+  }
 
   async getSchedulesByZone(zoneId, query = {}) {
     return this.doRequest(`/api/schedules/zone/${zoneId}`, {

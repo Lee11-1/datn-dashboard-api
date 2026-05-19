@@ -1,9 +1,5 @@
 const coreEngineApi = require('../integration/coreEngineApi');
 
-/**
- * Auth Service - Acts as a proxy to core-engine authentication
- * No longer handles database operations directly
- */
 class AuthService {
 
   async login(username, password) {

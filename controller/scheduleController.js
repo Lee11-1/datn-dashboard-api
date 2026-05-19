@@ -49,6 +49,24 @@ class ScheduleController {
     }
   }
 
+  async getScheduleById(ctx) {
+    try{
+      const { id } = ctx.request.query;
+      const result = await coreEngineApi.getScheduleById(id);
+      
+      ctx.body = {
+        success: true,
+        data: result.data || result
+      };
+    } catch (error) {
+      ctx.status = 500;
+      ctx.body = {
+        success: false,
+        message: error.message
+      };
+    }
+  }
+
   async getSchedulesByZone(ctx) {
     try {
       const { zoneId } = ctx.params;

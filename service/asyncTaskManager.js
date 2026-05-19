@@ -1,10 +1,6 @@
 const { spawn } = require('child_process');
 const path = require('path');
 
-/**
- * Abstract base class for managing asynchronous background tasks with worker processes
- * Subclasses should implement start() and provide specific task logic
- */
 class AsyncTaskManager {
   constructor(taskName, workerScript) {
     this.taskName = taskName;
@@ -16,12 +12,7 @@ class AsyncTaskManager {
     this.taskQueue = [];
   }
 
-  /**
-   * Spawn a worker process to execute the task
-   * @param {Object} jobData - Data to pass to worker process
-   * @param {string} jobData.userId - User ID triggering the task
-   * @returns {number|null} Worker process ID or null if failed
-   */
+
   spawnWorker(jobData = {}) {
     try {
       const workerPath = path.join(__dirname, this.workerScript);
@@ -69,18 +60,11 @@ class AsyncTaskManager {
     }
   }
 
-  /**
-   * Queue a task for later execution
-   * @param {Object} jobData - Task data
-   */
   async queueTask(jobData = {}) {
     this.taskQueue.push(jobData);
     console.log(`[${this.taskName}] Task queued. Queue size: ${this.taskQueue.length}`);
   }
 
-  /**
-   * Process queued tasks respecting maxWorkers limit
-   */
   async processQueue() {
     while (this.taskQueue.length > 0 && this.activeWorkers.size < this.maxWorkers) {
       const jobData = this.taskQueue.shift();
@@ -88,35 +72,20 @@ class AsyncTaskManager {
     }
   }
 
-  /**
-   * Main task execution logic
-   * Override this in subclasses for specific implementations
-   * @param {Object} jobData - Task parameters
-   */
   async executeTask(jobData = {}) {
     throw new Error(`executeTask not implemented in ${this.constructor.name}`);
   }
 
-  /**
-   * Start the task (e.g., schedule cron, start listener)
-   * Must be implemented by subclasses
-   */
   start() {
     throw new Error(`start() not implemented in ${this.constructor.name}`);
   }
 
-  /**
-   * Stop the task gracefully
-   */
   stop() {
     console.log(`[${this.taskName}] Stopping task manager`);
     this.activeWorkers.clear();
     this.taskQueue = [];
   }
 
-  /**
-   * Get current status of the task manager
-   */
   getStatus() {
     return {
       taskName: this.taskName,
@@ -128,10 +97,6 @@ class AsyncTaskManager {
     };
   }
 
-  /**
-   * Trigger manual execution
-   * @param {Object} jobData - Task parameters
-   */
   async triggerManualExecution(jobData = {}) {
     const pid = this.spawnWorker(jobData);
     return {
@@ -141,16 +106,10 @@ class AsyncTaskManager {
     };
   }
 
-  /**
-   * Get worker information
-   */
   getWorkerInfo() {
     return Array.from(this.activeWorkers.values());
   }
 
-  /**
-   * Set maximum concurrent workers
-   */
   setMaxWorkers(max) {
     this.maxWorkers = Math.max(1, max);
     console.log(`[${this.taskName}] Max workers set to ${this.maxWorkers}`);

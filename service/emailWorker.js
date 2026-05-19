@@ -126,7 +126,6 @@ async function run() {
     const errorMsg = err && err.message ? err.message : String(err);
     console.error('[EmailWorker] Task failed:', errorMsg);
     
-    // Log retry information if applicable
     const retryCount = jobData.retryCount || 0;
     const maxRetries = 3;
     if (retryCount < maxRetries) {

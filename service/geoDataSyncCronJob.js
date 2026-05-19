@@ -11,7 +11,7 @@ class GeoDataSyncCronJob extends AsyncTaskManager {
 
   start() {
     this.cronJob = cron.schedule('0 2 1 * *', () => {
-      this.spawnWorker({ userId: 'SYSTEM_SCHEDULED' });
+      this.spawnWorker({ userId: '6d4493e1-7e8b-4c09-a72b-b555bb754344' });
     });
   }
 

@@ -20,7 +20,6 @@ router.post('/upload', multipartMiddleware, awsController.uploadFiles.bind(awsCo
 
 router.delete('/delete', awsController.deleteFile.bind(awsController));
 
-
 router.get('/signed-url', awsController.getSignedUrl.bind(awsController));
 
 router.get('/file-exists', awsController.fileExists.bind(awsController));
