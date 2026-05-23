@@ -113,6 +113,13 @@ class CoreEngineApi {
     });
   }
 
+  async createLog(payload){
+    return this.doRequest('/logs', {
+      method: 'post',
+      payload,
+    });
+  };
+
    async createCategory(categoryData) {
     return  this.doRequest('/api/categories', {
       method: 'post',

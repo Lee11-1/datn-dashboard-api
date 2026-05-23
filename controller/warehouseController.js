@@ -69,7 +69,15 @@ class WarehouseController {
 
   async deleteWarehouse(ctx) {
     try {
-      const { id } = ctx.params;
+      const { id } = ctx.request.query;
+      if (!id) {
+        ctx.status = 400;
+        ctx.body = { 
+          success: false, 
+          message: 'Missing required query parameter: id' 
+        };
+        return;
+      } 
       const result = await coreEngineApi.deleteWarehouse(id);
 
       ctx.body = {

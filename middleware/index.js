@@ -2,6 +2,7 @@ const _ = require("lodash");
 const uuid = require("uuid/v4");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
+const coreEngineApi = require('../integration/coreEngineApi');
 
 const loggingMethod = ["GET", "POST", "PUT", "DELETE", "PATCH"];
 const loggingPathIgnore = ["/login", "/api-logs-database", "/api-logs"];
@@ -11,8 +12,31 @@ class Log {
     this.data = data;
   }
 
-  createLog() {
+  async createLog() {
     console.log("Request Log:", JSON.stringify(this.data, null, 2));
+        try {
+      const logPayload = {
+        action: `${this.data.method} ${this.data.matched_route}`,
+        entityType: 'API_REQUEST',
+        level: this.data.status >= 400 ? (this.data.status >= 500 ? 'error' : 'warning') : 'info',
+        userId: this.data.user || null,
+        ipAddress: this.data.ipAddress || null,
+        userAgent: this.data.userAgent || null,
+        metadata: {
+          path: this.data.path,
+          matched_route: this.data.matched_route,
+          method: this.data.method,
+          status: this.data.status,
+          request: this.data.request,
+          response: this.data.response.data||this.data.response
+        }
+      };
+      if (this.data.method === "POST" || this.data.method === "PUT" || this.data.method === "PATCH" || this.data.method === "DELETE") {
+        await coreEngineApi.createLog(logPayload);
+      }
+    } catch (error) {
+      console.error('Failed to send log to core-engine:', error.message);
+    }
   }
 }
 
@@ -97,20 +121,25 @@ async function log(ctx, next) {
     loggingMethod.includes(ctx.method) &&
     !loggingPathIgnore.includes(matchedRoute)
   ) {
+    const user = ctx.User;
     const requestLog = new Log({
       path: ctx.path,
       matched_route: matchedRoute,
       method: ctx.method,
-      user: ctx.request.headers["x-key"],
+      user: user ? user.id : ctx.request.headers["x-key"],
       status: ctx.status,
       request: {
         query: ctx.query,
         body: ctx.request.body,
       },
       response: error || ctx.body,
+      ipAddress: ctx.ip,
+      userAgent: ctx.headers['user-agent']
     });
 
-    requestLog.createLog();
+    requestLog.createLog().catch(err => {
+      console.error('Logging error:', err.message);
+    });
   }
 }
 
