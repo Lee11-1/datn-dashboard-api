@@ -50,6 +50,32 @@ class OrdersController extends BaseController {
     }
   }
 
+  getOrdersBySchedule = async (ctx) => {
+    try {
+      const { scheduleId, page = 1, limit = 10 } = ctx.request.query;
+      if (!scheduleId) {
+        ctx.status = 400;
+        ctx.body = {
+          success: false,
+          message: 'Missing scheduleId'
+        };
+        return;
+      }
+      const result = await coreEngineApi.getOrdersBySchedule(scheduleId, { page, limit });
+      ctx.body = {
+        success: true,
+        data: result.data,
+        pagination: result.data.pagination
+      };
+    } catch (error) {
+      ctx.status = 500;
+      ctx.body = {
+        success: false,
+        message: error.message
+      };
+    }
+  }
+
   getOrderDetail = async (ctx) => {
     try {
       const { orderId } = ctx.request.query;

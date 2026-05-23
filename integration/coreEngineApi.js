@@ -288,6 +288,13 @@ class CoreEngineApi {
     });
   }
 
+  async getOrdersBySchedule(scheduleId, query = {}) {
+    return this.doRequest(`/api/orders/schedule/${scheduleId}`, {
+      method: 'get',
+      payload: query
+    });
+  }
+
   async getOrderItems(orderId) {
     return this.doRequest(`/api/orders/${orderId}/items`, {
       method: 'get'
@@ -427,6 +434,12 @@ class CoreEngineApi {
   
   async getScheduleById(id) {
     return this.doRequest(`/api/schedules/${id}`, {
+      method: 'get'
+    });
+  }
+
+  async getScheduleDetail(id) {
+     return this.doRequest(`/api/schedules/detail/${id}`, {
       method: 'get'
     });
   }

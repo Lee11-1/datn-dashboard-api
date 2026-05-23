@@ -18,4 +18,6 @@ router.patch('/reject', authorize, ordersController.rejectOrder.bind(ordersContr
 
 router.get('/user', authorize, ordersController.getOrdersByUser);
 
+router.get('/schedule', authorize,   ordersController.getOrdersBySchedule);
+
 module.exports = router;
