@@ -564,6 +564,13 @@ class CoreEngineApi {
       method: 'get'
     });
   }
+
+  async getOrdersByZoneWithCustomers(zoneId, query = {}) {
+    return this.doRequest(`/api/orders/zone/${zoneId}/customers`, {
+      method: 'get',
+      payload: query
+    });
+  }
 }
 
 module.exports = new CoreEngineApi();
