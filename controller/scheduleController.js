@@ -1,5 +1,5 @@
 const coreEngineApi = require('../integration/coreEngineApi');
-
+const analysService = require('../service/analysService');
 
 class ScheduleController {
   async createSchedule(ctx) {
@@ -161,6 +161,49 @@ class ScheduleController {
       };
     }
   }
+
+    async getScheduleZoneAnalytics(ctx) {
+    try {
+        const { zoneId } = ctx.request.query
+
+        if (!zoneId) {
+        ctx.status = 400
+        ctx.body = {
+            success: false,
+            message: 'zoneId is required'
+        }
+        return
+        }
+
+        const result = await analysService.getScheduleZoneAnalytics(
+            zoneId
+        )
+
+        if (!result) {
+        ctx.status = 404
+        ctx.body = {
+            success: false,
+            message: 'Analytics data not found'
+        }
+        return
+        }
+
+        ctx.status = 200
+        ctx.body = {
+        success: true,
+        data: result
+        }
+
+    } catch (error) {
+        console.error('Error in getScheduleZoneAnalytics:', error)
+
+        ctx.status = 500
+        ctx.body = {
+        success: false,
+        message: error.message || 'Internal server error'
+        }
+    }
+    }
 }
 
 module.exports = new ScheduleController();

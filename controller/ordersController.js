@@ -250,6 +250,40 @@ class OrdersController extends BaseController {
       };
     }
   }
+
+   async getTopRevenueZones(ctx) {
+    try {
+      const result = await coreEngineApi.getTopRevenueZones(ctx.request.query);
+      ctx.body = {
+        success: true,
+        data: result.data || result
+      };
+    } 
+      catch (error) {
+        ctx.status = 500;   
+        ctx.body = {
+          success: false,
+          message: error.message
+        };
+      }
+  }
+  
+  async getOrderStatistics(ctx) {
+    try {
+      const result = await coreEngineApi.getOrderStatistics(ctx.request.query);
+      const statistics = result.data || result;
+      ctx.body = {
+        success: true,
+        data: statistics
+      };
+    }
+    catch (error) {      ctx.status = 500;   
+      ctx.body = {
+        success: false,
+        message: error.message
+      };
+    }
+  }
 }
 
 module.exports = new OrdersController();

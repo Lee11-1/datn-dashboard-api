@@ -532,6 +532,12 @@ class CoreEngineApi {
     });
   }
 
+  async getZoneById(id) {
+    return this.doRequest(`/api/zones/${id}`, {
+      method: 'get'
+    });
+  }
+
   async updateZone(id, updateData) {
     return this.doRequest(`/api/zones/${id}`, {
       method: 'put',
@@ -571,6 +577,26 @@ class CoreEngineApi {
       payload: query
     });
   }
+  
+  async getTopRevenueZones(){
+    return this.doRequest('/api/orders/top-revenue-zones', {
+      method: 'get'
+    });
+  }
+
+  async getOrderStatistics(query) {
+    return this.doRequest('/api/orders/statistics', {
+      method: 'get',
+      payload: query
+    });
+  }
+
+   async getTopCustomersOrderByZone(zoneId)  {
+      return this.doRequest(`api/orders/zone/${zoneId}/customers`, {
+        method: 'get'
+      })
+  }
+
 }
 
 module.exports = new CoreEngineApi();

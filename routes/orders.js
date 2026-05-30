@@ -20,4 +20,7 @@ router.get('/user', authorize, ordersController.getOrdersByUser);
 
 router.get('/schedule', authorize,   ordersController.getOrdersBySchedule);
 
+router.get('/top-revenue-zones', authorize, ordersController.getTopRevenueZones.bind(ordersController));
+
+router.get('/statistics', authorize, ordersController.getOrderStatistics.bind(ordersController));
 module.exports = router;

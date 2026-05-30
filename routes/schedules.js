@@ -12,6 +12,8 @@ router.get('/', authorize, scheduleController.getSchedules.bind(scheduleControll
 
 router.get('/get-by-id', authorize, scheduleController.getScheduleById.bind(scheduleController));
 
+router.get('/zone-analytics', authorize, scheduleController.getScheduleZoneAnalytics.bind(scheduleController));
+
 router.get('/detail', authorize, scheduleController.getScheduleDetail.bind(scheduleController));
 
 router.get('/zone/:zoneId', authorize, scheduleController.getSchedulesByZone.bind(scheduleController));
