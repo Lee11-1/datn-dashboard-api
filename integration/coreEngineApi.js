@@ -597,6 +597,13 @@ class CoreEngineApi {
       })
   }
 
+  async getGeoDataUpdates(payload){
+    return this.doRequest('/api/geo-data-updates', {
+      method: 'get',
+      payload
+    });
+  }
+
 }
 
 module.exports = new CoreEngineApi();

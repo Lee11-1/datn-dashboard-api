@@ -51,6 +51,7 @@ class AsyncTaskManager {
       child.on('exit', (code, signal) => {
         console.log(`Worker ${child.pid} exited code=${code} signal=${signal}`);
         this.activeWorkers.delete(child.pid);
+        this.processQueue();
       });
 
       return child.pid;
@@ -98,6 +99,7 @@ class AsyncTaskManager {
   }
 
   async triggerManualExecution(jobData = {}) {
+    console.log(`[${this.taskName}] Manual execution triggered with data: ${JSON.stringify(jobData)}`);
     const pid = this.spawnWorker(jobData);
     return {
       spawned: !!pid,

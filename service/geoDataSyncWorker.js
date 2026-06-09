@@ -94,11 +94,9 @@ async function run() {
   }
 
   try {
-    console.log(`[GeoDataSyncWorker] Starting geo data sync (triggered by ${userId})`);
-
     const GeoDataSyncCronJob = require('./geoDataSyncCronJob');
     const geoDataSync = new GeoDataSyncCronJob(coreEngineApi);
-    const data = await geoDataSync.executeTask();
+    const data = await geoDataSync.executeTask(jobData);
     console.log('[GeoDataSyncWorker] Geo sync completed');
   } catch (err) {
     console.error('[GeoDataSyncWorker] Error:', err && err.message ? err.message : err);

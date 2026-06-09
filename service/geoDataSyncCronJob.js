@@ -15,12 +15,12 @@ class GeoDataSyncCronJob extends AsyncTaskManager {
     });
   }
 
-  async triggerManualSync(userId = '6d4493e1-7e8b-4c09-a72b-b555bb754344') {
+  async triggerManualSync(userId ) {
     return this.triggerManualExecution({ userId });
   }
 
   async executeTask(jobData = {}) {
-    const userId = jobData.userId || '6d4493e1-7e8b-4c09-a72b-b555bb754344';
+    const userId = jobData.userId ;
     
     if (this.isRunning) {
       console.warn('[GeoDataSync] Sync already in progress, skipping');
@@ -54,7 +54,6 @@ class GeoDataSyncCronJob extends AsyncTaskManager {
         triggeredBy: userId
       });
       updateRecordId = updateRecord.data?.id || updateRecord.id;
-      console.log('updateRecordId', updateRecordId);
       const rawWards = await gadmService.fetchWards();
       const wards = Array.isArray(rawWards) ? rawWards.map(formatZoneData) : [];
       syncStats.totalRecords = wards.length;
@@ -67,6 +66,8 @@ class GeoDataSyncCronJob extends AsyncTaskManager {
       };
 
       const syncResult = await this.coreEngineApi.syncZones(syncPayload);
+      console.log('sync result', syncStats.totalRecords);
+      console.log( syncResult);
       syncStats = {
         ...syncStats,
         ...syncResult.statistics,

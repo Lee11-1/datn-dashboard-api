@@ -89,10 +89,7 @@ class ZoneController {
 
   async getGeoDataUpdates(ctx) {
     try {
-      const response = await coreEngineApi.getZones({
-        ...ctx.request.query,
-        endpoint: '/api/geo-data-updates'
-      });
+      const response = await coreEngineApi.getGeoDataUpdates(ctx.request.query);
 
       ctx.body = {
         success: true,
@@ -110,7 +107,6 @@ class ZoneController {
   async triggerGeoDataSync(ctx) {
     try {
       const userId = ctx.User?.id || 'MANUAL_USER';
-      
       const status = geoDataSyncCronJob.getStatus();
       if (status.isRunning) {
         ctx.status = 409;
