@@ -135,34 +135,6 @@ class CoreEngineApi {
   
   }
 
-  async getCategoryTree() {
-    return  this.doRequest('/api/categories/tree', {
-      method: 'get',
-    });
-  }
-
-
-  async getRootCategories(query = {}) {
-    return  this.doRequest('/api/categories/root', {
-      method: 'get',
-      payload: query,
-    });
-  }
-
-  async getCategoryById(id) {
-    return  this.doRequest(`/api/categories/${id}`, {
-      method: 'get',
-    });
-  }
-
-  async getChildCategories(parentId, query = {}) {
-    return  this.doRequest(`/api/categories/${parentId}/children`, {
-      method: 'get',
-      payload: query,
-    });
-  }
-
-
   async updateCategory(id, updates) {
     return  this.doRequest(`/api/categories/${id}`, {
       method: 'put',
@@ -170,29 +142,9 @@ class CoreEngineApi {
     });
   }
 
-
   async deleteCategory(id) {
     return  this.doRequest(`/api/categories/${id}`, {
       method: 'delete',
-    });
-  }
-
-  async activateCategory(id) {
-    return  this.doRequest(`/api/categories/${id}/activate`, {
-      method: 'patch',
-    });
-  }
-
-  async deactivateCategory(id) {
-    return  this.doRequest(`/api/categories/${id}/deactivate`, {
-      method: 'patch',
-    });
-  }
-
-  async reorderCategories(id, orderData) {
-    return  this.doRequest(`/api/categories/${id}/reorder`, {
-      method: 'patch',
-      payload: orderData,
     });
   }
 
@@ -229,12 +181,6 @@ class CoreEngineApi {
     });
   }
 
-  async searchCustomers(searchTerm) {
-    return this.doRequest('/api/customers/search', {
-      method: 'get',
-      payload: { term: searchTerm },
-    });
-  }
   async getCustomersByZone(zoneId, query = {}) {
     return this.doRequest(`/api/customers/zone/${zoneId}`, {
       method: 'get',
@@ -601,6 +547,62 @@ class CoreEngineApi {
     return this.doRequest('/api/geo-data-updates', {
       method: 'get',
       payload
+    });
+  }
+
+    async createPromotion(promotionData) {
+    return this.doRequest('/api/promotions', {
+      method: 'post',
+      payload: promotionData,
+    });
+
+  }
+
+  async getPromotions(query) {
+    return this.doRequest('/api/promotions', {
+      method: 'get',
+      payload: query,
+    });
+  }
+
+
+  async getPromotionById(id) {
+    return this.doRequest(`/api/promotions/${id}`, {
+      method: 'get',
+    });
+
+  }
+
+  async updatePromotion(id, promotionData) {
+   return this.doRequest(`/api/promotions/${id}`, {
+      method: 'put',
+      payload: promotionData,
+    });
+  }
+
+  async deletePromotion(id) {
+   return this.doRequest(`/api/promotions/${id}`, {
+      method: 'delete',
+    });
+  }
+
+  async updatePromotionStatus(id, status) {
+    return this.doRequest(`/api/promotions/${id}/status`, {
+      method: 'patch',
+      payload: { status },
+    });
+  }
+
+  async getActivePromotions() {
+    return this.doRequest('/api/promotions/active', {
+      method: 'get',
+    });
+  }
+
+  async getPromotionsByZone(zoneId, query) {
+    return this.doRequest(`/api/promotions/zone/${zoneId}`, {
+      method: 'get',
+      payload: query,
     });
   }
 
