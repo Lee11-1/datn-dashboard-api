@@ -2,14 +2,16 @@ const coreEngineApi = require('../integration/coreEngineApi');
 
 module.exports = {
 
-  getScheduleZoneAnalytics: async (zoneId) => {
+  getScheduleZoneAnalytics: async (query) => {
     try {
+      const { zoneId, startDate, endDate } = query;
+
       const customersResponse = await coreEngineApi.getTopCustomersOrderByZone(
-        zoneId
+            zoneId , startDate, endDate 
       )
-      
-      const statsResponse = await coreEngineApi.getOrderStatistics({zoneId: zoneId})
-      
+
+      const statsResponse = await coreEngineApi.getOrderStatistics({ zoneId, startDate, endDate })
+
       return {
         customers: customersResponse.data ? customersResponse.data : [],
         orderStats: statsResponse.data ? statsResponse.data : []

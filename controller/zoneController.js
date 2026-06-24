@@ -90,10 +90,10 @@ class ZoneController {
   async getGeoDataUpdates(ctx) {
     try {
       const response = await coreEngineApi.getGeoDataUpdates(ctx.request.query);
-
       ctx.body = {
         success: true,
-        data: response.data || response
+        data: response.data || response,
+        pagination: response.pagination || null
       };
     } catch (error) {
       ctx.status = 500;

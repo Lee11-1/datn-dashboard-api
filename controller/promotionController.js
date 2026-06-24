@@ -59,7 +59,7 @@ class PromotionController {
 
   async getPromotionById(ctx) {
     try {
-      const { id } = ctx.params;
+      const { id } = ctx.request.query;
       const promotion = await promotionService.getPromotionById(id);
 
       ctx.body = {
@@ -81,9 +81,8 @@ class PromotionController {
 
   async updatePromotion(ctx) {
     try {
-      const { id } = ctx.params;
       const promotionData = ctx.request.body;
-      const updatedPromotion = await promotionService.updatePromotion(id, promotionData);
+      const updatedPromotion = await promotionService.updatePromotion(promotionData.id, promotionData);
 
       ctx.body = {
         success: true,
@@ -105,7 +104,7 @@ class PromotionController {
 
   async deletePromotion(ctx) {
     try {
-      const { id } = ctx.params;
+      const { id } = ctx.request.query;
       await promotionService.deletePromotion(id);
 
       ctx.body = {
@@ -118,36 +117,6 @@ class PromotionController {
       } else {
         ctx.status = 500;
       }
-      ctx.body = {
-        success: false,
-        message: error.message,
-      };
-    }
-  }
-
-  async updateStatus(ctx) {
-    try {
-      const { id } = ctx.params;
-      const { status } = ctx.request.body;
-
-      if (!status) {
-        ctx.status = 400;
-        ctx.body = {
-          success: false,
-          message: 'Status is required',
-        };
-        return;
-      }
-
-      const updatedPromotion = await promotionService.updatePromotionStatus(id, status);
-
-      ctx.body = {
-        success: true,
-        message: 'Promotion status updated successfully',
-        data: updatedPromotion,
-      };
-    } catch (error) {
-      ctx.status = 400;
       ctx.body = {
         success: false,
         message: error.message,
@@ -181,35 +150,6 @@ class PromotionController {
         success: true,
         data: result.data,
         pagination: result.pagination,
-      };
-    } catch (error) {
-      ctx.status = 500;
-      ctx.body = {
-        success: false,
-        message: error.message,
-      };
-    }
-  }
-
-  async bulkUpdateStatus(ctx) {
-    try {
-      const { promotionIds, status } = ctx.request.body;
-
-      if (!promotionIds || !Array.isArray(promotionIds) || !status) {
-        ctx.status = 400;
-        ctx.body = {
-          success: false,
-          message: 'promotionIds array and status are required',
-        };
-        return;
-      }
-
-      const result = await promotionService.bulkUpdateStatus(promotionIds, status);
-
-      ctx.body = {
-        success: true,
-        message: 'Bulk status update completed',
-        data: result,
       };
     } catch (error) {
       ctx.status = 500;

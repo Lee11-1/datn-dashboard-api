@@ -53,16 +53,6 @@ class PromotionService {
     return response.data;
   }
 
-  async updatePromotionStatus(id, status) {
-    const response = await coreEngineApi.updatePromotionStatus(id, status);
-
-    if (!response.success) {
-      throw new Error(response.message || 'Failed to update promotion status');
-    }
-
-    return response.data;
-  }
-
   async getActivePromotions() {
     const response = await coreEngineApi.getActivePromotions();
 
@@ -88,17 +78,6 @@ class PromotionService {
 
   async searchPromotions(query) {
     return await this.getPromotions(query);
-  }
-
-  async bulkUpdateStatus(promotionIds, status) {
-    const results = await Promise.allSettled(
-      promotionIds.map(id => this.updatePromotionStatus(id, status))
-    );
-
-    return {
-      successful: results.filter(r => r.status === 'fulfilled').length,
-      failed: results.filter(r => r.status === 'rejected').length,
-    };
   }
 }
 

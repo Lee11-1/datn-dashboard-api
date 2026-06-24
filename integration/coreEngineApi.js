@@ -524,9 +524,10 @@ class CoreEngineApi {
     });
   }
   
-  async getTopRevenueZones(){
+  async getTopRevenueZones(query) {
     return this.doRequest('/api/orders/top-revenue-zones', {
-      method: 'get'
+      method: 'get',
+      payload: query
     });
   }
 
@@ -537,9 +538,10 @@ class CoreEngineApi {
     });
   }
 
-   async getTopCustomersOrderByZone(zoneId)  {
+   async getTopCustomersOrderByZone(zoneId, startDate, endDate) {
       return this.doRequest(`api/orders/zone/${zoneId}/customers`, {
-        method: 'get'
+        method: 'get',
+        payload: { startDate, endDate }
       })
   }
 
@@ -606,6 +608,51 @@ class CoreEngineApi {
     });
   }
 
-}
+  async getComplaints(query) {
+    return this.doRequest('/api/complaints', {
+      method: 'get',
+      payload: query,
+    });
+  }
 
+  async updateComplaint(id, updateData) {
+    return this.doRequest(`/api/complaints/${id}`, {
+      method: 'put',
+      payload: updateData,
+    });
+  }
+
+  async updateComplaintStatus(id, status) {
+    return this.doRequest(`/api/complaints/status`, {
+      method: 'put',
+      payload: { id, status },
+    });
+  }
+
+  async deleteComplaint(id) {
+    return this.doRequest(`/api/complaints/${id}`, {
+      method: 'delete',
+    });
+  }
+  async getComplaintsByUser(userId, query) {
+    return this.doRequest(`/api/complaints/user/${userId}`, {
+      method: 'get',
+      payload: query
+    });
+  }
+
+  async getComplaintsByCustomer(customerId, query) {
+    return this.doRequest(`/api/complaints/customer/${customerId}`, {
+      method: 'get',
+      payload: query
+    });
+  }
+
+  async getComplaintsByOrder(orderId, query) {
+    return this.doRequest(`/api/complaints/order/${orderId}`, {
+      method: 'get',
+      payload: query
+    });
+  }
+}
 module.exports = new CoreEngineApi();

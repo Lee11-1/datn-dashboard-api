@@ -7,8 +7,12 @@ class CustomerController {
       const customerData = ctx.request.body;
 
       const result = await coreEngineApi.createCustomer(customerData);
-
-      ctx.status = 201;
+      if (result.success) {
+        ctx.status = 201;
+      }
+      else{
+        ctx.status = 400;
+      }
       ctx.body = result;
     } catch (error) {
       ctx.status = 400;

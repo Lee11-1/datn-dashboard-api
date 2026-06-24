@@ -176,7 +176,7 @@ class ScheduleController {
         }
 
         const result = await analysService.getScheduleZoneAnalytics(
-            zoneId
+            ctx.request.query
         )
 
         if (!result) {
