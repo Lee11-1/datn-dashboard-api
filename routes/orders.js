@@ -15,7 +15,6 @@ router.patch('/:orderId/status', authorize, ordersController.updateOrderStatus.b
 router.patch('/approve', authorize, ordersController.approveOrder.bind(ordersController));
 
 router.patch('/reject', authorize, ordersController.rejectOrder.bind(ordersController));
-
 router.get('/user', authorize, ordersController.getOrdersByUser);
 
 router.get('/schedule', authorize,   ordersController.getOrdersBySchedule);

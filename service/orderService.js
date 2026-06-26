@@ -20,6 +20,7 @@ class OrderService {
           updateData.push({
             id: item.inventory.id,
             quantity: quantity_available - item.quantity,
+            reservedQty: item.inventory.reservedQty - item.quantity,
             userId: approvedBy
           })
         }

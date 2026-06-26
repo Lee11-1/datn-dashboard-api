@@ -117,7 +117,7 @@ class OrdersController extends BaseController {
   updateOrderStatus = async (ctx) => {
     try {
       const { orderId } = ctx.params;
-      const { status, rejectReason, rejectNote, approvedBy, note } = ctx.request.body;
+      const { status, rejectReason, rejectNote, approvedBy, note, failReason } = ctx.request.body;
 
       if (!status) {
         ctx.status = 400;
@@ -148,6 +148,11 @@ class OrdersController extends BaseController {
 
       const result = await coreEngineApi.updateOrderStatus(orderId, ctx.request.body);
 
+      const data = await this.redis.get(`order_detail:${orderId}`);
+      if (data) {
+        await this.redis.del(`order_detail:${orderId}`);
+      }
+      
       ctx.body = {
         success: true,
         message: `Order approved successfully`,
